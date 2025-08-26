@@ -22,7 +22,6 @@ header p{
 
 .sidebar {
   width: 20%;
-  background: #f4f4f4;
   padding: 15px;
   box-sizing: border-box;
   border-right: 1px solid #ddd;
@@ -83,4 +82,3 @@ iframe {
     color: #06559e; /* Same color for hover and active states */
     text-decoration: none; /* Ensure no underline on hover */
 }
-  background: #f4f4f4;
