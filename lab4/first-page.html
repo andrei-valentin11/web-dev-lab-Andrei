@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome Page</title>
+  <style>
+    /* Basic reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100vh;
+      background: linear-gradient(135deg, #1a1a40, #000000);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden;
+    }
+
+    .welcome-container {
+      text-align: center;
+      animation: fadeIn 2s ease forwards;
+      opacity: 0;
+    }
+
+    .welcome-container h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .welcome-container p {
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      background: #ffcc00;
+      color: black;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .btn:hover {
+      transform: scale(1.1);
+    }
+
+    /* Glow animation for background */
+    .glow {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      filter: blur(100px);
+      pointer-events: none;
+    }
+
+    /* Fade in keyframes */
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Glow background elements -->
+  <div class="glow" id="glow1"></div>
+  <div class="glow" id="glow2"></div>
+
+  <!-- Main welcome content -->
+  <div class="welcome-container">
+    <h1>Welcome to My Page</h1>
+    <p>Bringing creativity and code together!</p>
+    <button class="btn" onclick="alert('Let’s get started!')">Get Started</button>
+  </div>
+
+  <script>
+    // JavaScript to animate the glowing circles
+    const glow1 = document.getElementById('glow1');
+    const glow2 = document.getElementById('glow2');
+
+    let angle1 = 0;
+    let angle2 = 180;
+
+    function animateGlows() {
+      // Move glow1 in a circle
+      let x1 = window.innerWidth / 2 + Math.cos(angle1 * Math.PI/180) * 200 - 150;
+      let y1 = window.innerHeight / 2 + Math.sin(angle1 * Math.PI/180) * 200 - 150;
+      glow1.style.left = x1 + 'px';
+      glow1.style.top = y1 + 'px';
+
+      // Move glow2 in opposite circle
+      let x2 = window.innerWidth / 2 + Math.cos(angle2 * Math.PI/180) * 250 - 150;
+      let y2 = window.innerHeight / 2 + Math.sin(angle2 * Math.PI/180) * 250 - 150;
+      glow2.style.left = x2 + 'px';
+      glow2.style.top = y2 + 'px';
+
+      angle1 += 0.5;
+      angle2 -= 0.5;
+
+      requestAnimationFrame(animateGlows);
+    }
+
+    animateGlows();
+  </script>
+</body>
+</html>
