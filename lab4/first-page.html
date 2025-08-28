@@ -1,117 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>WELCOME NIGGA!</title>
+  <meta charset="UTF-8" />
+  <title>First Page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    /* Basic reset */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; }
     body {
-      height: 100vh;
-      background: linear-gradient(135deg, #101073, #2f1c7b);
-      color: rgb(94, 16, 136);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      color: #ff9e37;
+      background: #432002; /* fallback */
       overflow: hidden;
     }
-
-    .welcome-container {
+    canvas {
+      position: fixed; inset: 0; z-index: -1;
+    }
+    .welcome {
+      height: 100%;
+      display: grid;
+      place-items: center;
       text-align: center;
-      animation: fadeIn 2s ease forwards;
-      opacity: 0;
+      background: linear-gradient(to bottom, rgba(69, 34, 2, 0.35), rgba(145, 64, 6, 0.755));
+      animation: fadeIn 1.2s ease forwards; opacity: 0;
+      padding: 2rem;
     }
-
-    .welcome-container h1 {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-    }
-
-    .welcome-container p {
-      font-size: 1.25rem;
-      margin-bottom: 2rem;
-    }
-
+    h1 { font-size: clamp(2rem, 4vw, 3.5rem); margin-bottom: .75rem; }  
+    p  { font-size: clamp(1rem, 2vw, 1.25rem); opacity: .9; margin-bottom: 1.5rem; }
     .btn {
-      padding: 0.75rem 1.5rem;
-      font-size: 1rem;
-      background: #ffcc00;
-      color: black;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: transform 0.3s ease;
+      padding: .8rem 1.2rem; border: 0; border-radius: 12px;
+      background: #492103; color: #ce7217; font-weight: 600; cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease;
+      box-shadow: 0 8px 20px rgba(255, 213, 74, .25);
     }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(100, 57, 1, 0.747); }
 
-    .btn:hover {
-      transform: scale(1.1);
-    }
-
-    /* Glow animation for background */
-    .glow {
-      position: absolute;
-      width: 300px;
-      height: 300px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 50%;
-      filter: blur(100px);
-      pointer-events: none;
-    }
-
-    /* Fade in keyframes */
-    @keyframes fadeIn {
-      to {
-        opacity: 1;
-      }
-    }
+    @keyframes fadeIn { to { opacity: 1; } }
   </style>
 </head>
 <body>
-  <!-- Glow background elements -->
-  <div class="glow" id="glow1"></div>
-  <div class="glow" id="glow2"></div>
+  <canvas id="bg"></canvas>
 
-  <!-- Main welcome content -->
-  <div class="welcome-container">
-    <h1>Welcome to My Page</h1>
-    <p>Bringing creativity and code together!</p>
-    <button class="btn" onclick="alert('Let’s get started!')">Get Started</button>
+  <div class="welcome">
+    <div>
+      <h1>Welcome to KapeSilog!</h1>
+      <p>Teka lang Pareh, Kape ka muna Par!</p>
+      <button class="btn" onclick="alert('teh kanin nga teh')">MENU</button>
+    </div>
   </div>
 
   <script>
-    // JavaScript to animate the glowing circles
-    const glow1 = document.getElementById('glow1');
-    const glow2 = document.getElementById('glow2');
+    // ===== Config you can tweak =====
+    const CONFIG = {
+      count: 120,         // number of sticks
+      minLen: 25,         // min stick length (px)
+      maxLen: 120,        // max stick length (px)
+      minSpeed: 0.2,      // min linear speed (px/frame)
+      maxSpeed: 1.4,      // max linear speed
+      minRot: -0.01,      // min rotation speed (rad/frame)
+      maxRot:  0.01,      // max rotation speed
+      minWidth: 1,        // min line width (px)
+      maxWidth: 3,        // max line width
+      bgFade: 0.08,       // 0=hard trails, 1=solid clear each frame
+      glow: true          // set false to disable glow
+    };
 
-    let angle1 = 0;
-    let angle2 = 180;
+    const canvas = document.getElementById('bg');
+    const ctx = canvas.getContext('2d');
+    let W, H, sticks = [];
 
-    function animateGlows() {
-      // Move glow1 in a circle
-      let x1 = window.innerWidth / 2 + Math.cos(angle1 * Math.PI/180) * 200 - 150;
-      let y1 = window.innerHeight / 2 + Math.sin(angle1 * Math.PI/180) * 200 - 150;
-      glow1.style.left = x1 + 'px';
-      glow1.style.top = y1 + 'px';
+    function resize() {
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
+      W = canvas.width  = Math.floor(innerWidth  * dpr);
+      H = canvas.height = Math.floor(innerHeight * dpr);
+      canvas.style.width  = innerWidth + 'px';
+      canvas.style.height = innerHeight + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    addEventListener('resize', resize);
+    resize();
 
-      // Move glow2 in opposite circle
-      let x2 = window.innerWidth / 2 + Math.cos(angle2 * Math.PI/180) * 250 - 150;
-      let y2 = window.innerHeight / 2 + Math.sin(angle2 * Math.PI/180) * 250 - 150;
-      glow2.style.left = x2 + 'px';
-      glow2.style.top = y2 + 'px';
+    // Create a nice gradient stroke reused for all sticks
+    function makeStroke() {
+      const g = ctx.createLinearGradient(0, 0, innerWidth, innerHeight);
+      g.addColorStop(0,   '#7aa7ff');
+      g.addColorStop(0.5, '#a47cff');
+      g.addColorStop(1,   '#68ffd5');
+      return g;
+    }
+    let strokeGradient = makeStroke();
 
-      angle1 += 0.5;
-      angle2 -= 0.5;
-
-      requestAnimationFrame(animateGlows);
+    // Build sticks
+    function rnd(a, b) { return a + Math.random() * (b - a); }
+    function randomStick() {
+      const len   = rnd(CONFIG.minLen, CONFIG.maxLen);
+      const angle = rnd(0, Math.PI * 2);
+      const speed = rnd(CONFIG.minSpeed, CONFIG.maxSpeed);
+      const rotSp = rnd(CONFIG.minRot, CONFIG.maxRot);
+      const lw    = rnd(CONFIG.minWidth, CONFIG.maxWidth);
+      return {
+        x: Math.random() * innerWidth,
+        y: Math.random() * innerHeight,
+        len, angle,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        rot: rotSp,
+        lw,
+        alpha: rnd(0.35, 0.9)
+      };
     }
 
-    animateGlows();
+    function init() {
+      sticks = Array.from({ length: CONFIG.count }, randomStick);
+    }
+    init();
+
+    // Mouse repulsion for subtle interaction
+    const mouse = { x: innerWidth / 2, y: innerHeight / 2, active: false };
+    addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; mouse.active = true; });
+    addEventListener('mouseleave', () => mouse.active = false);
+
+    // Animation loop
+    function frame() {
+      // Fade the previous frame for motion trails
+      ctx.fillStyle = `rgba(11, 15, 23, ${CONFIG.bgFade})`;
+      ctx.fillRect(0, 0, innerWidth, innerHeight);
+
+      if (CONFIG.glow) {
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = 'rgba(160,170,255,0.5)';
+      } else {
+        ctx.shadowBlur = 0;
+      }
+      ctx.strokeStyle = strokeGradient;
+
+      for (const s of sticks) {
+        // Movement
+        s.x += s.vx;
+        s.y += s.vy;
+        s.angle += s.rot;
+
+        // Edge bounce
+        if (s.x < -s.len || s.x > innerWidth + s.len) s.vx *= -1;
+        if (s.y < -s.len || s.y > innerHeight + s.len) s.vy *= -1;
+
+        // Mouse repulsion
+        if (mouse.active) {
+          const dx = s.x - mouse.x;
+          const dy = s.y - mouse.y;
+          const d2 = dx*dx + dy*dy;
+          const r = 120; // influence radius
+          if (d2 < r*r) {
+            const d = Math.sqrt(d2) || 1;
+            s.vx += (dx / d) * 0.05;
+            s.vy += (dy / d) * 0.05;
+          }
+        }
+
+        // Draw stick as a rotating line centered at (x, y)
+        const hx = Math.cos(s.angle) * (s.len / 2);
+        const hy = Math.sin(s.angle) * (s.len / 2);
+
+        ctx.globalAlpha = s.alpha;
+        ctx.lineWidth = s.lw;
+        ctx.beginPath();
+        ctx.moveTo(s.x - hx, s.y - hy);
+        ctx.lineTo(s.x + hx, s.y + hy);
+        ctx.stroke();
+      }
+
+      ctx.globalAlpha = 1;
+      requestAnimationFrame(frame);
+    }
+    frame();
+
+    // Rebuild gradient on resize (so colors line up with viewport)
+    addEventListener('resize', () => { strokeGradient = makeStroke(); });
+
+    // Optional: click to “shuffle” directions
+    addEventListener('click', () => {
+      for (const s of sticks) {
+        s.vx = -s.vx;
+        s.vy = -s.vy;
+      }
+    });
   </script>
 </body>
 </html>
