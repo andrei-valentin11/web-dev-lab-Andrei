@@ -1,35 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home | Sunrise Roastery</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home | Sunrise Roastery</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #fffaf5;
+      color: #333;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 { color: #6b3e26; }
+    h2 { color: #8b4513; margin-top: 30px; }
+
+    ul { list-style: none; padding: 0; }
+    ul li {
+      margin: 12px auto;
+      padding: 10px;
+      width: 60%;
+      background: #f8ede3;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    ul li:hover { background: #ffe2b3; transform: scale(1.05); }
+
+    .coffee-detail {
+      display: none;
+      margin: 20px auto;
+      padding: 20px;
+      width: 70%;
+      background: #fdf3e7;
+      border-radius: 10px;
+      text-align: left;
+      animation: fadeIn 0.5s ease;
+    }
+    .coffee-detail img {
+      width: 200px;
+      border-radius: 10px;
+      float: left;
+      margin-right: 20px;
+    }
+    .coffee-detail p { line-height: 1.5; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    footer { margin-top: 40px; color: #555; }
+  </style>
 </head>
 <body>
 
-    <!-- Café Header Section -->
-    <h1>Sunrise Roastery</h1>
-    <p>Step into Sunrise Roastery, where every cup is brewed to brighten your day. Taste bold flavors, enjoy our artisan bakes, and start your morning right.</p>
-    <hr>
+  <!-- Header -->
+  <h1>Sunrise Roastery</h1>
+  <p>Step into Sunrise Roastery, where every cup is brewed to brighten your day. Taste bold flavors, enjoy our artisan bakes, and start your morning right.</p>
+  <hr>
 
-    <!-- Our Story Section -->
-    <h2>Our Story</h2>
-    <p>Founded by friends with a shared love for coffee and community, Sunrise Roastery began as a tiny corner café. Today, we continue to roast small batches of premium beans and craft every pastry by hand, keeping the same passion that started it all.</p>
-    <hr>
+  <!-- Story -->
+  <h2>Our Story</h2>
+  <p>Founded by friends with a shared love for coffee and community, Sunrise Roastery began as a tiny corner café. Today, we continue to roast small batches of premium beans and craft every pastry by hand, keeping the same passion that started it all.</p>
+  <hr>
 
-    <!-- Preview Menu Section -->
-    <h2>Our Menu Preview</h2>
-    <ul>
-        <li>Vanilla Cold Brew</li>
-        <li>Hazelnut Cappuccino</li>
-        <li>Matcha Latte</li>
-        <li>Almond Croissant</li>
-        <li>Turkey Pesto Panini</li>
-    </ul>
-    <hr>
+  <!-- Menu -->
+  <h2>Our Menu Preview</h2>
+  <ul>
+    <li onclick="showCoffee('vanilla')">Vanilla Cold Brew</li>
+    <li onclick="showCoffee('hazelnut')">Hazelnut Cappuccino</li>
+    <li onclick="showCoffee('matcha')">Matcha Latte</li>
+    <li onclick="showCoffee('croissant')">Almond Croissant</li>
+    <li onclick="showCoffee('panini')">Turkey Pesto Panini</li>
+  </ul>
+  <hr>
 
-    <!-- Footer Section -->
+  <!-- Coffee Details -->
+  <div id="vanilla" class="coffee-detail">
+    <img src="https://frostingandfettuccine.com/wp-content/uploads/2022/12/Vanilla-Iced-Coffee-5.jpg" alt="Vanilla Cold Brew">
+    <h3>Vanilla Cold Brew</h3>
+    <p>A smooth and refreshing cold brew infused with natural vanilla. Perfectly balanced, lightly sweet, and great for hot days.</p>
+  </div>
+
+  <div id="hazelnut" class="coffee-detail">
+    <img src="https://wearenotmartha.com/wp-content/uploads/chocolate-hazelnut-cookie-cold-brew-featured.jpg" alt="Hazelnut Cappuccino">
+    <h3>Hazelnut Cappuccino</h3>
+    <p>A creamy cappuccino with a nutty twist. The roasted hazelnut flavor blends beautifully with espresso and frothy milk.</p>
+  </div>
+
+  <div id="matcha" class="coffee-detail">
+    <img src="https://cdn.loveandlemons.com/wp-content/uploads/2023/06/iced-matcha-latte.jpg" alt="Matcha Latte">
+    <h3>Matcha Latte</h3>
+    <p>Earthy, vibrant green tea blended with creamy milk. A calming, antioxidant-rich drink with a slightly sweet flavor.</p>
+  </div>
+
+  <div id="croissant" class="coffee-detail">
+    <img src="https://media.istockphoto.com/id/1717126433/photo/cream-is-poured-into-a-glass-with-iced-coffee-on-a-gray-background.jpg?s=612x612&w=0&k=20&c=6mS7SR6JY4LIvhmhV0KEbI6e2_Vy5xtlyd9Kr_AGU6A=" alt="Almond Croissant">
+    <h3>Almond Croissant</h3>
+    <p>A buttery, flaky pastry filled with almond cream and topped with roasted almond slices and powdered sugar.</p>
+  </div>
+
+  <div id="panini" class="coffee-detail">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRD29MoyU-iuL2uEQN0RcSl2YtjKe0O60VGRg&s" alt="Turkey Pesto Panini">
+    <h3>Turkey Pesto Panini</h3>
+    <p>Grilled to perfection, this panini features smoked turkey, fresh mozzarella, tomatoes, and basil pesto on rustic bread.</p>
+  </div>
+
+  <!-- Footer -->
+  <footer>
     <p>&copy; 2025 Sunrise Roastery. All rights reserved.</p>
+  </footer>
+
+  <script>
+    function showCoffee(id) {
+      // hide all details first
+      const details = document.querySelectorAll('.coffee-detail');
+      details.forEach(detail => detail.style.display = "none");
+
+      // show the one clicked
+      document.getElementById(id).style.display = "block";
+      window.scrollTo({ top: document.getElementById(id).offsetTop - 20, behavior: 'smooth' });
+    }
+  </script>
 
 </body>
 </html>
