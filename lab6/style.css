@@ -1,0 +1,19 @@
+/* style.css */
+.button-box {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.styled-btn {
+  background-color: #6b3e26;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.styled-btn:hover {
+  background-color: #8b4513;
+}
