@@ -3,19 +3,106 @@
 <head>
   <meta charset="UTF-8">
   <title>About Me</title>
+  <link rel="stylesheet" href="../style.css"> <!-- Link to main site CSS -->
+  <style>
+    /* Container */
+    .about-container {
+      max-width: 700px;
+      margin: 50px auto;
+      background: var(--card-bg);
+      color: var(--text-main);
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 6px 18px var(--shadow);
+      animation: fadeIn 0.8s ease-in-out;
+      text-align: center;
+    }
+
+    /* Profile Image */
+    .profile-pic {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid var(--accent);
+      margin-bottom: 15px;
+      box-shadow: 0 4px 10px var(--shadow);
+      opacity: 0;
+      animation: profileFade 1s ease forwards;
+      animation-delay: 0.2s;
+    }
+
+    .profile-pic:hover {
+      transform: scale(1.05);
+    }
+
+    /* Title */
+    .about-container h1 {
+      font-size: 2rem;
+      color: var(--accent);
+      margin-bottom: 15px;
+    }
+
+    /* Paragraphs */
+    .about-container p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+
+    /* Hobby Badges */
+    .hobbies {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 25px;
+      padding: 0;
+    }
+
+    .hobbies li {
+      list-style: none;
+      background: var(--accent-dark);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 50px;
+      font-size: 1rem;
+      box-shadow: 0 3px 6px var(--shadow);
+      transition: all 0.3s ease;
+    }
+
+    .hobbies li:hover {
+      background: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes profileFade {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
 </head>
 <body>
-  <h1>Andrei Valentin</h1>
-  <p>Hello! Im Andrei Valentin, a student who loves learning about technology and design. I enjoy creating projects that challenge me to think creatively.</p>
-  
-  <ul>
-    <li>Playing basketball</li>
-    <li>Coding websites</li>
-    <li>Drawing sketches</li>
-  </ul>
-  
-  <hr>
-  
-  <p>Thanks for visiting my page! I look forward to learning and improving my skills every day.</p>
+  <div class="about-container">
+    <!-- Profile Image -->
+    <img src="Andrei.png" alt="Profile Picture" class="profile-pic">
+
+    <h1>Andrei Valentin</h1>
+    <p>Hello! I'm Andrei Valentin, a student who loves learning about technology and design. I enjoy creating projects that challenge me to think creatively.</p>
+    
+    <ul class="hobbies">
+      <li>🏀 Playing Basketball</li>
+      <li>💻 Coding Websites</li>
+      <li>✏️ Drawing Sketches</li>
+    </ul>
+    
+    <p>Thanks for visiting my page! I look forward to learning and improving my skills every day.</p>
+  </div>
 </body>
 </html>

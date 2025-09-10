@@ -4,8 +4,139 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Destination - Boracay</title>
+  <style>
+    /* ===== GLOBAL ===== */
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #1c1c22;
+      color: #e0e0e0;
+      text-align: center;
+      padding: 20px;
+      margin: 0;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    h1 {
+      color: #ffcc66;
+      text-shadow: 0 0 10px rgba(255, 204, 102, 0.5);
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      color: #ffcc66;
+      margin-top: 30px;
+      border-left: 4px solid #ffcc66;
+      display: inline-block;
+      padding-left: 10px;
+      text-shadow: 0 0 5px rgba(255, 204, 102, 0.4);
+    }
+
+    p {
+      color: #d8d8d8;
+      max-width: 700px;
+      margin: 0 auto 15px;
+      line-height: 1.6;
+    }
+
+    hr {
+      border: none;
+      height: 1px;
+      background: #333;
+      margin: 25px auto;
+      width: 80%;
+    }
+
+    /* ===== MENU LIST ===== */
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 20px auto;
+    }
+
+    ul li {
+      margin: 10px auto;
+      padding: 12px;
+      max-width: 400px;
+      background: #262630;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    ul li:hover {
+      background: #3a3a48;
+      transform: scale(1.05);
+    }
+
+    /* ===== COFFEE DETAIL SECTION ===== */
+    .coffee-detail {
+      display: none;
+      margin: 25px auto;
+      padding: 20px;
+      max-width: 750px;
+      background: #262630;
+      border-radius: 12px;
+      text-align: left;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      animation: fadeIn 0.6s ease;
+    }
+
+    .coffee-detail img {
+      width: 200px;
+      border-radius: 10px;
+      float: left;
+      margin-right: 20px;
+    }
+
+    .coffee-detail h3 {
+      color: #ffcc66;
+      margin-top: 0;
+    }
+
+    .coffee-detail p {
+      line-height: 1.6;
+      color: #dcdcdc;
+    }
+
+    /* ===== NAV LINK ===== */
+    nav a {
+      display: inline-block;
+      text-decoration: none;
+      color: #f5f5f5;
+      background: #3a3a48;
+      padding: 10px 20px;
+      margin-top: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    nav a:hover {
+      background: #4a4a5a;
+      transform: scale(1.05);
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      margin-top: 40px;
+      color: #bcbcbc;
+      font-size: 0.9rem;
+      border-top: 1px solid #3a3a48;
+      padding-top: 15px;
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
+
+  <!-- Header -->
   <header>
     <h1>Trip to Boracay</h1>
     <nav>
@@ -15,7 +146,9 @@
       </ul>
     </nav>
   </header>
+  <hr>
 
+  <!-- Main Content -->
   <main>
     <article>
       <h2>Why I Love Boracay</h2>
@@ -23,23 +156,24 @@
 
       <h3>Watch My Travel Video</h3>
       <!-- YouTube video -->
-      <iframe width="560" height="315" src="https://www.youtube.com/embed/YLfdwK3cG1g" 
-              title="YouTube video player" frameborder="0" 
-              allowfullscreen></iframe>
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/YLfdwK3cG1g"
+              title="Boracay Travel Video" frameborder="0" allowfullscreen></iframe>
 
       <h3>Location on the Map</h3>
       <!-- Google Maps embed -->
-      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3923.271196449249!2d121.924444!3d11.967375!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a53d9c43c0d7d5%3A0x1fae8fdfa6b12c57!2sBoracay!5e0!3m2!1sen!2sph!4v1700000000000" 
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3923.271196449249!2d121.924444!3d11.967375!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33a53d9c43c0d7d5%3A0x1fae8fdfa6b12c57!2sBoracay!5e0!3m2!1sen!2sph!4v1700000000000"
               width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
     </article>
   </main>
+  <hr>
 
+  <!-- Footer -->
   <footer>
     <p>&copy; 2025 My Travel Blog. All rights reserved.</p>
-    <p>
-      Follow me on 
+    <p>Follow me on 
       <a href="https://www.instagram.com/yo4ndrei/?hl=en" target="_blank">Instagram</a>
     </p>
   </footer>
+
 </body>
 </html>

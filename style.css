@@ -1,84 +1,264 @@
- body {
-  font-family: Arial, sans-serif;
+/* -------------------------
+   GLOBAL VARIABLES
+------------------------- */
+:root {
+  --bg-main: linear-gradient(135deg, #1d1d29, #292937); /* Smooth gradient */
+  --bg-secondary: #2b2b3c;
+  --accent: #3d7ea6;
+  --accent-light: #63a4c7;
+  --text-main: #f5f5f5;
+  --text-muted: #bbbbbb;
+  --shadow: rgba(0, 0, 0, 0.3);
+  --radius: 12px;
+  --transition: all 0.3s ease-in-out;
+}
+
+/* -------------------------
+   GLOBAL STYLES
+------------------------- */
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
+  background: var(--bg-main);
+  color: var(--text-main);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  animation: fadeIn 1s ease-in-out;
 }
 
+/* -------------------------
+   HEADER
+------------------------- */
 header {
-  background: #7e00cc;
-  color: white;
-  padding: 1px;
+  background: rgba(43, 43, 60, 0.95);
+  color: var(--text-main);
+  padding: 20px 10px;
   text-align: center;
+  box-shadow: 0 4px 15px var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  backdrop-filter: blur(6px);
 }
 
-header p{
+header h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  letter-spacing: 1px;
+  color: var(--accent-light);
+  animation: textGlow 2s infinite alternate;
+}
+
+header p {
   font-size: 0.9em;
-  color: #e0e0e0;  
+  color: var(--text-muted);
+  margin: 3px 0;
 }
 
+.custom-link {
+  text-decoration: none;
+  color: var(--accent-light);
+  transition: var(--transition);
+}
+
+.custom-link:hover {
+  color: var(--accent);
+  text-shadow: 0 0 6px var(--accent-light);
+}
+
+/* -------------------------
+   HAMBURGER MENU (MOBILE)
+------------------------- */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: var(--accent-light);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.menu-toggle:hover {
+  color: var(--accent);
+}
+
+/* -------------------------
+   CONTAINER & SIDEBAR
+------------------------- */
 .container {
   display: flex;
-  height: 90vh;
+  flex: 1;
+  min-height: calc(100vh - 80px);
 }
 
 .sidebar {
-  width: 20%;
-  padding: 15px;
-  box-sizing: border-box;
-  border-right: 1px solid #ddd;
+  width: 260px;
+  padding: 20px;
+  background: rgba(43, 43, 60, 0.95);
+  border-right: 1px solid #444;
+  box-shadow: inset 0 0 8px var(--shadow);
   overflow-y: auto;
+  transition: transform 0.4s ease-in-out;
+  backdrop-filter: blur(8px);
+  border-radius: 0 var(--radius) var(--radius) 0;
 }
 
 .sidebar h3 {
-  margin-top: 0;
+  color: var(--accent-light);
+  text-align: center;
 }
 
 .sidebar ul {
   list-style: none;
   padding-left: 0;
+  margin: 0;
 }
 
 .sidebar li {
   margin: 8px 0;
+  font-size: 0.95rem;
 }
 
 .sidebar li ul {
   margin-left: 15px;
-  padding-left: 0px;
-  border-left: 2px solid #ddd;
+  padding-left: 0;
+  border-left: 2px solid #555;
 }
 
 .sidebar a {
   text-decoration: none;
-  color: #b800cc;
+  color: var(--text-main);
+  padding: 6px 8px;
+  display: inline-block;
+  border-radius: var(--radius);
+  transition: var(--transition);
 }
 
 .sidebar a:hover {
-  text-decoration: underline;
+  background: #383850;
+  color: var(--accent-light);
+  transform: translateX(5px);
+  box-shadow: 0 2px 6px var(--shadow);
 }
 
+/* -------------------------
+   CONTENT / IFRAME
+------------------------- */
 .content {
-  width: 80%;
+  flex: 1;
   padding: 15px;
-  box-sizing: border-box;
+  background: rgba(35, 35, 47, 0.95);
+  border-radius: var(--radius) 0 0 var(--radius);
+  box-shadow: inset 0 0 10px var(--shadow);
+  animation: fadeIn 0.8s ease-in-out;
+  backdrop-filter: blur(4px);
 }
 
 iframe {
   width: 100%;
   height: 100%;
   border: none;
+  border-radius: var(--radius);
 }
 
-.custom-link {
-    text-decoration: none; /* Removes underline */
-    color: #ffffff; /* Set your desired color (e.g., blue) */
+/* -------------------------
+   SLIDING SIDEBAR (MOBILE)
+------------------------- */
+@media (max-width: 768px) {
+  .container {
+    position: relative;
+    flex-direction: column;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    max-width: 260px;
+    transform: translateX(-100%);
+    z-index: 2000;
+  }
+
+  .sidebar.active {
+    transform: translateX(0);
+  }
+
+  .content {
+    width: 100%;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
 }
 
-.custom-link:visited {
-    color: #ffffff; /* Same color for visited links */
+/* -------------------------
+   SCROLLBAR STYLING
+------------------------- */
+.sidebar::-webkit-scrollbar {
+  width: 8px;
 }
 
-.custom-link:hover,
-.custom-link:active {
-    color: #9e0664; /* Same color for hover and active states */
-    text-decoration: none; /* Ensure no underline on hover */
+.sidebar::-webkit-scrollbar-track {
+  background: #2b2b3c;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 4px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-light);
+}
+
+/* -------------------------
+   ANIMATIONS
+------------------------- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes textGlow {
+  from { text-shadow: 0 0 5px var(--accent); }
+  to { text-shadow: 0 0 15px var(--accent-light); }
+}
+/* -------------------------
+   STYLED BUTTON
+------------------------- */
+.button-box {
+  text-align: center;
+  margin: 30px 0;
+}
+
+.styled-btn {
+  background: linear-gradient(135deg, #3d3d50, #4b4b63);
+  color: var(--text-main);
+  padding: 12px 28px;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px var(--shadow);
+  transition: var(--transition);
+}
+
+.styled-btn:hover {
+  background: linear-gradient(135deg, var(--accent), var(--accent-light));
+  color: #fff;
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px var(--shadow);
+}
+
+.styled-btn:active {
+  transform: scale(0.98);
 }

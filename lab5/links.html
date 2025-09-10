@@ -1,26 +1,107 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Working with Hyperlinks</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* PAGE BACKGROUND + TEXT */
+    body {
+      background: #1c1c22; /* dark but not too black */
+      color: #e0e0e0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    /* CONTAINER */
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 30px;
+      background: #262630;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      animation: slideUp 0.8s ease-out;
+    }
+
+    /* HEADINGS */
+    h2, h3 {
+      color: #4ea3ff;
+      text-shadow: 0 0 8px rgba(78,163,255,0.4);
+    }
+
+    /* BUTTON LINKS */
+    .btn {
+      display: inline-block;
+      padding: 12px 20px;
+      margin: 8px 0;
+      background: linear-gradient(135deg, #3a82ff, #5db2ff);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.5);
+    }
+
+    /* SECTION STYLING */
+    #section1 {
+      margin-top: 25px;
+      padding: 20px;
+      background: #2e2e38;
+      border-left: 5px solid #4ea3ff;
+      border-radius: 8px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeSlideIn 0.7s ease-out forwards;
+      animation-delay: 0.3s;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes fadeSlideIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* SMOOTH SCROLLING */
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
 </head>
 <body>
+  <main class="container">
+    <h2>Working with Hyperlinks</h2>
 
-  <h2>Working with Hyperlinks</h2>
+    <a class="btn" href="#section1">Go to Section 1</a><br>
+    <a class="btn" href="https://github.com/andrei-valentin11" target="_blank">My GitHub Profile</a><br>
+    <a class="btn" href="index.html">Go to Mini Cafe Site</a><br>
 
-  <!-- Internal link -->
-  <a href="#section1">Go to Section 1</a><br>
-
-  <!-- GitHub Profile (open in new tab) -->
-  <a href="https://github.com/andrei-valentin11" target="_blank">My GitHub Profile</a><br>
-
-  <!-- Link to index.html -->
-  <a href="index.html">Go to mini cafe site</a><br><br>
-
-  <!-- Section -->
-  <section id="section1">
-    <h3>Section 1</h3>
-    <p>This is content inside Section 1.</p>
-  </section>
-
+    <section id="section1">
+      <h3>Section 1</h3>
+      <p>This section now matches your main website’s theme.  
+      It has a dark, soft background, glowing headings, and smooth animation.  
+      Clicking the link scrolls here smoothly instead of jumping instantly.</p>
+    </section>
+  </main>
 </body>
 </html>

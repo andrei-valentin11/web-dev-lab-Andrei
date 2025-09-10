@@ -1,49 +1,111 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Embedded Media</title>
+  <link rel="stylesheet" href="style.css">
   <style>
+    /* PAGE BACKGROUND + TEXT */
     body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
-      margin: 20px;
+      background: #1c1c22;
+      color: #e0e0e0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      animation: fadeIn 0.8s ease-in-out;
     }
+
+    /* MAIN CONTAINER */
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 30px;
+      background: #262630;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      animation: slideUp 0.8s ease-out;
+    }
+
+    /* HEADINGS */
+    h2, h3 {
+      color: #4ea3ff;
+      text-shadow: 0 0 8px rgba(78,163,255,0.4);
+      margin-top: 0;
+    }
+
+    /* SECTION STYLING */
     section {
-      margin-bottom: 40px;
-    }
-    iframe {
-      border: 0;
+      margin-top: 25px;
+      padding: 20px;
+      background: #2e2e38;
+      border-left: 5px solid #4ea3ff;
       border-radius: 8px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeSlideIn 0.7s ease-out forwards;
+    }
+
+    section:nth-of-type(1) {
+      animation-delay: 0.3s;
+    }
+    section:nth-of-type(2) {
+      animation-delay: 0.6s;
+    }
+
+    /* IFRAME STYLING */
+    iframe {
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      transition: transform 0.3s ease;
+    }
+
+    iframe:hover {
+      transform: scale(1.02);
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes fadeSlideIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
 <body>
+  <main class="container">
+    <h2>Embedded Video and Map</h2>
 
-  <h2>Embedded Video and Map</h2>
+    <section>
+      <h3>Café Experience Video</h3>
+      <p>Watch this relaxing café atmosphere video:</p>
+      <iframe 
+        width="100%" height="315"
+        src="https://www.youtube.com/embed/nyDnQQSUfL0" 
+        title="Café Video"
+        allowfullscreen>
+      </iframe>
+    </section>
 
-  <!-- YouTube Café Video -->
-  <section>
-    <h3>Café Experience Video</h3>
-    <p>Watch this relaxing café atmosphere video:</p>
-    <iframe width="560" height="315" 
-      src="https://www.youtube.com/embed/nyDnQQSUfL0" 
-      title="YouTube video player"
-      frameborder="0" 
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-      allowfullscreen>
-    </iframe>
-  </section>
-
-  <!-- Google Map Café Location -->
-  <section>
-    <h3>Sample Café Location (Philippines)</h3>
-    <p>Here’s a café in Manila, Philippines:</p>
-    <iframe 
-      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3858.6178354663497!2d121.01998677590728!3d14.634217085837135!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397b7b056ddcc77%3A0x9161d507c2a07f0!2sThe%20Brewology%20Cafe!5e0!3m2!1sen!2sph!4v1693839000000" 
-      width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" 
-      referrerpolicy="no-referrer-when-downgrade">
-    </iframe>
-  </section>
-
+    <section>
+      <h3>Sample Café Location (Philippines)</h3>
+      <p>Here’s a café in Manila, Philippines:</p>
+      <iframe 
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3858.6178354663497!2d121.01998677590728!3d14.634217085837135"
+        width="100%" height="400"
+        style="border:0;" allowfullscreen loading="lazy">
+      </iframe>
+    </section>
+  </main>
 </body>
 </html>

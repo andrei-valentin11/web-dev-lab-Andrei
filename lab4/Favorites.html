@@ -3,22 +3,99 @@
 <head>
   <meta charset="UTF-8">
   <title>My Favorites</title>
+  <link rel="stylesheet" href="../style.css"> <!-- Matches your main site -->
+  <style>
+    /* Container */
+    .favorites-container {
+      max-width: 700px;
+      margin: 50px auto;
+      background: var(--card-bg);
+      color: var(--text-main);
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 6px 18px var(--shadow);
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    /* Heading */
+    .favorites-container h1 {
+      font-size: 2rem;
+      color: var(--accent);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    /* Ordered List (Favorites) */
+    .favorites-container ol {
+      padding-left: 20px;
+      margin-bottom: 25px;
+      font-size: 1.1rem;
+    }
+
+    .favorites-container ol li {
+      margin: 8px 0;
+      background: var(--accent-dark);
+      color: white;
+      padding: 10px 15px;
+      border-radius: 10px;
+      box-shadow: 0 3px 6px var(--shadow);
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+
+    .favorites-container ol li:hover {
+      transform: translateX(5px);
+      background: var(--accent);
+    }
+
+    /* Links List */
+    .favorites-container ul {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      list-style: none;
+      padding: 0;
+    }
+
+    .favorites-container ul li a {
+      text-decoration: none;
+      background: var(--accent);
+      color: white;
+      padding: 10px 18px;
+      border-radius: 50px;
+      font-weight: bold;
+      box-shadow: 0 3px 6px var(--shadow);
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+    .favorites-container ul li a:hover {
+      background: var(--accent-light);
+      transform: scale(1.05);
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
-  <h1>My Favorites</h1>
-  
-  <ol>
-    <li>Movie: Avengers: Endgame</li>
-    <li>Book: Harry Potter</li>
-    <li>Song: Akala mo ata</li>
-    <li>Movie: The amazing Spiderman</li>
-    <li>Book: Diary of a Wimpy Kid</li>
-  </ol>
-  
-  <ul>
-    <li><a href="https://www.github.com" target="_blank">GitHub</a></li>
-    <li><a href="https://www.youtube.com" target="_blank">YouTube</a></li>
-    <li><a href="https://www.wikipedia.org" target="_blank">Wikipedia</a></li>
-  </ul>
+  <div class="favorites-container">
+    <h1>My Favorites</h1>
+
+    <ol>
+      <li>🎬 Movie: Avengers: Endgame</li>
+      <li>📚 Book: Harry Potter</li>
+      <li>🎵 Song: Akala Mo Ata</li>
+      <li>🎥 Movie: The Amazing Spiderman</li>
+      <li>📖 Book: Diary of a Wimpy Kid</li>
+    </ol>
+
+    <ul>
+      <li><a href="https://www.github.com" target="_blank">GitHub</a></li>
+      <li><a href="https://www.youtube.com" target="_blank">YouTube</a></li>
+      <li><a href="https://www.wikipedia.org" target="_blank">Wikipedia</a></li>
+    </ul>
+  </div>
 </body>
 </html>
