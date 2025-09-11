@@ -7,13 +7,61 @@
 
   <!-- Internal CSS for headings -->
   <style>
+    /* Dark Theme Headings */
     h1 {
-      color: darkblue;
+      color: #ffcc80;
       text-align: center;
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 2rem;
+      margin-top: 20px;
+      animation: fadeInDown 0.6s ease-in-out;
     }
     h2 {
-      color: darkgreen;
+      color: #ffb74d;
       text-align: center;
+      font-weight: 600;
+      font-size: 1.4rem;
+      animation: fadeInDown 0.8s ease-in-out;
+    }
+
+    /* Container for button */
+    .button-box {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    /* Button (styled externally, but fallback here if external CSS missing) */
+    .styled-btn {
+      background: #ff9800;
+      color: #1e1e1e;
+      border: none;
+      padding: 12px 25px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+      transition: all 0.3s ease-in-out;
+    }
+    .styled-btn:hover {
+      background: #ffa726;
+      transform: scale(1.05);
+    }
+
+    /* Animation */
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Page background */
+    body {
+      background: #1e1e1e;
+      color: #f5f5f5;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 20px;
     }
   </style>
 
@@ -22,23 +70,21 @@
 </head>
 <body>
 
-   <!-- Heading styled by internal CSS -->
+  <!-- Headings styled by internal CSS -->
   <h1>Pull up naka all black coupe</h1>
   <h2>Pare flow ko ay classic</h2>
 
   <!-- Paragraph with inline CSS -->
-  <p style="color: gray; font-size: 18px; text-align: center;">
+  <p style="color: #ccc; font-size: 18px; text-align: center; margin-top: 10px;">
     Sa kalsada ay savage, Tawag nya saken ay salbahe
   </p>
 
-  <!-- Button styled by external CSS -->
-<div class="button-box">
-  <button class="styled-btn" onclick="window.location.href='activity4.html'">
-    Tiramisu by Sica
-  </button>
-</div>
-
-
+  <!-- Button styled by external CSS but linked to activity4.html -->
+  <div class="button-box">
+    <button class="styled-btn" onclick="window.location.href='activity4.html'">
+      Tiramisu by Sica
+    </button>
+  </div>
 
 </body>
 </html>
