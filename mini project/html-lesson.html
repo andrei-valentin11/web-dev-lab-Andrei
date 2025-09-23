@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Lessons</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Fira Code', monospace; }
+        pre { font-family: 'Fira Code', monospace; font-size: 0.95rem; }
+    </style>
+</head>
+<body>
+    <div class="symbol-bg">
+        <span>{}</span><span>&lt;/&gt;</span><span>;</span><span>=</span><span>()</span><span>&lt;!&gt;</span><span>function</span><span>&lt;h1&gt;</span>
+    </div>
+
+    <header>
+        <h1>📄 HTML Lessons</h1>
+        <p>Learn how to build the structure of a webpage.</p>
+        <button id="theme-toggle">🌙 Light Mode</button>
+    </header>
+
+    <section class="lesson">
+        <h2>Lesson 1: Basic Structure</h2>
+        <p>HTML uses tags like &lt;html&gt;, &lt;head&gt;, and &lt;body&gt; to structure a page.</p>
+        <pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;&lt;title&gt;My Page&lt;/title&gt;&lt;/head&gt;
+  &lt;body&gt;Hello World!&lt;/body&gt;
+&lt;/html&gt;</pre>
+
+        <h2>Lesson 2: Headings and Paragraphs</h2>
+        <p>Use headings (&lt;h1&gt; - &lt;h6&gt;) and paragraphs (&lt;p&gt;) to organize text.</p>
+        <pre>&lt;h1&gt;Welcome&lt;/h1&gt;
+&lt;p&gt;This is my first paragraph.&lt;/p&gt;</pre>
+
+        <h2>Lesson 3: Links and Images</h2>
+        <p>Use &lt;a&gt; for links and &lt;img&gt; for images.</p>
+        <pre>&lt;a href="https://example.com"&gt;Visit Site&lt;/a&gt;
+&lt;img src="image.jpg" alt="My Image"&gt;</pre>
+    </section>
+
+    <nav>
+        <a href="index.html" class="btn">⬅ Home</a>
+        <a href="css-lesson.html" class="btn">Next ➡</a>
+    </nav>
+
+    <script src="script.js"></script>
+</body>
+</html>

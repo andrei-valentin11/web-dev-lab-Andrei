@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Lessons</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Fira Code', monospace; }
+        pre { font-family: 'Fira Code', monospace; font-size: 0.95rem; }
+    </style>
+</head>
+<body>
+    <div class="symbol-bg">
+        <span>{}</span><span>&lt;/&gt;</span><span>;</span><span>=</span><span>()</span><span>&lt;!&gt;</span><span>function</span><span>&lt;h1&gt;</span>
+    </div>
+
+    <header>
+        <h1>⚡ JavaScript Lessons</h1>
+        <p>Learn to make your web pages interactive.</p>
+        <button id="theme-toggle">🌙 Light Mode</button>
+    </header>
+
+    <section class="lesson">
+        <h2>Lesson 1: Variables</h2>
+        <pre>let name = "John";
+console.log(name);</pre>
+
+        <h2>Lesson 2: Functions</h2>
+        <pre>function greet() {
+  alert("Hello!");
+}</pre>
+
+        <h2>Lesson 3: Events</h2>
+        <pre>&lt;button onclick="greet()"&gt;Click Me&lt;/button&gt;</pre>
+    </section>
+
+    <nav>
+        <a href="css-lesson.html" class="btn">⬅ Previous</a>
+        <a href="quiz.html" class="btn btn-highlight">Take Quiz ➡</a>
+    </nav>
+
+    <script src="script.js"></script>
+</body>
+</html>

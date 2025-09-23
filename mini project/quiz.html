@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coding Basics Quiz</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h3 { font-family: 'Fira Code', monospace; }
+    </style>
+</head>
+<body>
+    <div class="symbol-bg">
+        <span>{}</span><span>&lt;/&gt;</span><span>;</span><span>=</span><span>()</span><span>&lt;!&gt;</span><span>function</span><span>&lt;h1&gt;</span>
+    </div>
+
+    <header>
+        <h1>📝 Final Quiz</h1>
+        <p>Test what you learned in HTML, CSS, and JavaScript.</p>
+        <button id="theme-toggle">🌙 Light Mode</button>
+    </header>
+
+    <section class="lesson">
+        <form id="quiz-form">
+            <h3>1. Which HTML tag creates a main heading?</h3>
+            <label><input type="radio" name="q1" value="A"> &lt;p&gt;</label><br>
+            <label><input type="radio" name="q1" value="B"> &lt;h1&gt;</label><br>
+            <label><input type="radio" name="q1" value="C"> &lt;title&gt;</label><br>
+
+            <h3>2. Which CSS property changes text color?</h3>
+            <label><input type="radio" name="q2" value="A"> font-size</label><br>
+            <label><input type="radio" name="q2" value="B"> color</label><br>
+            <label><input type="radio" name="q2" value="C"> background</label><br>
+
+            <h3>3. Which JavaScript code displays a message?</h3>
+            <label><input type="radio" name="q3" value="A"> alert("Hi!");</label><br>
+            <label><input type="radio" name="q3" value="B"> &lt;p&gt;Hi&lt;/p&gt;</label><br>
+            <label><input type="radio" name="q3" value="C"> color: red;</label><br>
+
+            <button type="submit" class="btn btn-highlight">Submit</button>
+        </form>
+
+        <p id="quiz-result" class="quiz-result"></p>
+    </section>
+
+    <nav>
+        <a href="index.html" class="btn">🏠 Home</a>
+    </nav>
+
+    <script src="script.js"></script>
+</body>
+</html>

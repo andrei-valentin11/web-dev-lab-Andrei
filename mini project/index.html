@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coding Basics - Home</title>
+
+    <!-- Google Fonts for a Coding Theme -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <style>
+        header h1 {
+            font-family: 'Fira Code', monospace;
+            font-size: 3rem;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+        header p {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 20px;
+            opacity: 0.85;
+        }
+        nav {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            margin-top: 40px;
+        }
+        nav .btn {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            width: 220px;
+            text-align: center;
+        }
+        .disabled {
+            opacity: 0.5;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+        footer {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            margin-top: 50px;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="symbol-bg">
+        <span>{}</span><span>&lt;/&gt;</span><span>;</span><span>=</span><span>()</span><span>&lt;!&gt;</span><span>function</span><span>&lt;h1&gt;</span>
+    </div>
+
+    <header>
+        <h1>💻 Coding Basics</h1>
+        <p>Learn the core building blocks of the web — HTML, CSS, and JavaScript — in a structured and fun way!</p>
+        <button id="theme-toggle">🌙 Light Mode</button>
+    </header>
+
+    <nav>
+        <a href="html-lesson.html" class="btn" id="html-link">📄 HTML Lessons</a>
+        <a href="css-lesson.html" class="btn" id="css-link">🎨 CSS Lessons</a>
+        <a href="js-lesson.html" class="btn" id="js-link">⚡ JavaScript Lessons</a>
+        <a href="quiz.html" class="btn btn-highlight disabled" id="quiz-link">🔒 Final Quiz</a>
+    </nav>
+
+    <footer>
+        <p>Made with ❤️ by You | Coding Basics Website</p>
+    </footer>
+
+    <script>
+        // Check if all lessons are completed
+        function checkLessons() {
+            const htmlDone = localStorage.getItem("lessonHTML") === "true";
+            const cssDone = localStorage.getItem("lessonCSS") === "true";
+            const jsDone = localStorage.getItem("lessonJS") === "true";
+            const quizLink = document.getElementById("quiz-link");
+
+            if (htmlDone && cssDone && jsDone) {
+                quizLink.classList.remove("disabled");
+                quizLink.textContent = "✅ Final Quiz";
+            }
+        }
+
+        // Mark a lesson as visited when clicked
+        document.getElementById("html-link").addEventListener("click", () => {
+            localStorage.setItem("lessonHTML", "true");
+        });
+        document.getElementById("css-link").addEventListener("click", () => {
+            localStorage.setItem("lessonCSS", "true");
+        });
+        document.getElementById("js-link").addEventListener("click", () => {
+            localStorage.setItem("lessonJS", "true");
+        });
+
+        // Check progress on page load
+        window.onload = checkLessons;
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>

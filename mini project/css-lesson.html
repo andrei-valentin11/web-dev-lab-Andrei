@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Lessons</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Fira Code', monospace; }
+        pre { font-family: 'Fira Code', monospace; font-size: 0.95rem; }
+    </style>
+</head>
+<body>
+    <div class="symbol-bg">
+        <span>{}</span><span>&lt;/&gt;</span><span>;</span><span>=</span><span>()</span><span>&lt;!&gt;</span><span>function</span><span>&lt;h1&gt;</span>
+    </div>
+
+    <header>
+        <h1>🎨 CSS Lessons</h1>
+        <p>Learn to style your web pages beautifully.</p>
+        <button id="theme-toggle">🌙 Light Mode</button>
+    </header>
+
+    <section class="lesson">
+        <h2>Lesson 1: Selectors</h2>
+        <p>Use selectors to choose which elements to style.</p>
+        <pre>h1 { color: blue; }
+p { font-size: 18px; }</pre>
+
+        <h2>Lesson 2: Colors & Backgrounds</h2>
+        <pre>body { background-color: lightgray; }
+p { color: red; }</pre>
+
+        <h2>Lesson 3: Box Model</h2>
+        <p>Padding, border, and margin define space around elements.</p>
+        <pre>div {
+  padding: 10px;
+  border: 2px solid black;
+  margin: 20px;
+}</pre>
+    </section>
+
+    <nav>
+        <a href="html-lesson.html" class="btn">⬅ Previous</a>
+        <a href="js-lesson.html" class="btn">Next ➡</a>
+    </nav>
+
+    <script src="script.js"></script>
+</body>
+</html>
