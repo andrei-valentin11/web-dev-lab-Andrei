@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dark Themed Calculator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Simple Calculator</h1>
+
+  <div class="card" style="max-width:400px; margin:auto;">
+    <input type="number" id="num1" placeholder="Enter first number"> +
+    <input type="number" id="num2" placeholder="Enter second number">
+    <br><br>
+    <button id="addBtn">Add</button>
+    <h3>Result: <span id="result">0</span></h3>
+  </div>
+
+  <script>
+    const addBtn = document.getElementById("addBtn");
+    addBtn.onclick = function() {
+      let n1 = parseFloat(document.getElementById("num1").value) || 0;
+      let n2 = parseFloat(document.getElementById("num2").value) || 0;
+      let sum = n1 + n2;
+      document.getElementById("result").innerText = sum;
+    }
+  </script>
+</body>
+</html>

@@ -1,214 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home | Sunrise Roastery</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Food Order</title>
   <style>
-    /* ===== GLOBAL ===== */
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #1c1c22;
-      color: #e0e0e0;
+      background: #1d1d29;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      color: #f5f5f5;
       text-align: center;
-      padding: 20px;
       margin: 0;
-      animation: fadeIn 0.8s ease-in-out;
+      padding: 0;
     }
 
     h1 {
-      color: #ffcc66;
-      text-shadow: 0 0 10px rgba(255, 204, 102, 0.5);
-      font-size: 2.5rem;
-      margin-bottom: 10px;
-    }
-
-    h2 {
-      color: #ffcc66;
+      font-size: 2.3rem;
+      color: #63a4c7;
       margin-top: 30px;
-      border-left: 4px solid #ffcc66;
-      display: inline-block;
-      padding-left: 10px;
-      text-shadow: 0 0 5px rgba(255, 204, 102, 0.4);
     }
 
     p {
-      color: #d8d8d8;
-      max-width: 700px;
-      margin: 0 auto 15px;
-      line-height: 1.6;
+      color: #bbbbbb;
+      margin-bottom: 30px;
     }
 
-    hr {
+    .menu-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 25px;
+      padding: 20px;
+    }
+
+    .card {
+      width: 300px;
+      background: #2b2b3c;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+      padding: 15px;
+      text-align: center;
+      color: #ffffff;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .card h3 {
+      color: #63a4c7;
+      margin: 10px 0;
+    }
+
+    .card p {
+      color: #e0e0e0;
+      font-size: 0.9rem;
+      margin: 8px 0;
+    }
+
+    .price {
+      color: #ffd86b;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+
+    button {
+      background: linear-gradient(135deg, #3d7ea6, #63a4c7);
       border: none;
-      height: 1px;
-      background: #333;
-      margin: 25px auto;
-      width: 80%;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: 0.3s;
     }
 
-    /* ===== MENU LIST ===== */
+    button:hover {
+      background: linear-gradient(135deg, #63a4c7, #3d7ea6);
+      box-shadow: 0 0 10px #63a4c7;
+    }
+
+    #summary {
+      background: #2b2b3c;
+      color: #fff;
+      width: 80%;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.4);
+      text-align: left;
+    }
+
+    #summary h2 {
+      text-align: center;
+      color: #ffd86b;
+    }
+
     ul {
       list-style: none;
       padding: 0;
-      margin: 20px auto;
     }
 
-    ul li {
-      margin: 10px auto;
-      padding: 12px;
-      max-width: 400px;
-      background: #262630;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: background 0.3s ease, transform 0.2s ease;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    }
-
-    ul li:hover {
-      background: #3a3a48;
-      transform: scale(1.05);
-    }
-
-    /* ===== COFFEE DETAIL SECTION ===== */
-    .coffee-detail {
-      display: none;
-      margin: 25px auto;
-      padding: 20px;
-      max-width: 750px;
-      background: #262630;
-      border-radius: 12px;
-      text-align: left;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-      animation: fadeIn 0.6s ease;
-    }
-
-    .coffee-detail img {
-      width: 200px;
-      border-radius: 10px;
-      float: left;
-      margin-right: 20px;
-    }
-
-    .coffee-detail h3 {
-      color: #ffcc66;
-      margin-top: 0;
-    }
-
-    .coffee-detail p {
-      line-height: 1.6;
-      color: #dcdcdc;
-    }
-
-    /* ===== NAV LINK ===== */
-    nav a {
-      display: inline-block;
-      text-decoration: none;
-      color: #f5f5f5;
-      background: #3a3a48;
-      padding: 10px 20px;
-      margin-top: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-      transition: background 0.3s ease, transform 0.2s ease;
-    }
-
-    nav a:hover {
-      background: #4a4a5a;
-      transform: scale(1.05);
-    }
-
-    /* ===== FOOTER ===== */
-    footer {
-      margin-top: 40px;
-      color: #bcbcbc;
-      font-size: 0.9rem;
-      border-top: 1px solid #3a3a48;
-      padding-top: 15px;
-    }
-
-    /* ===== ANIMATIONS ===== */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+    li {
+      padding: 8px 0;
+      border-bottom: 1px solid #444;
+      font-size: 1rem;
+      color: #e2e2e2;
     }
   </style>
 </head>
+
 <body>
+  <h1>🍽️ Food Menu</h1>
+  <p>Choose from our delicious meals and order your favorites!</p>
 
-  <!-- Header -->
-  <h1>Sunrise Roastery</h1>
-  <p>Step into Sunrise Roastery, where every cup is brewed to brighten your day. Taste bold flavors, enjoy our artisan bakes, and start your morning right.</p>
-  <hr>
+  <div class="menu-container">
+    <!-- Food Item 1 -->
+    <div class="card">
+      <img src="https://cdn.pixabay.com/photo/2016/03/05/19/02/hamburger-1238246_1280.jpg" alt="Cheese Burger" />
+      <h3>Cheese Burger</h3>
+      <p>Juicy beef patty with melted cheddar, lettuce, and toasted buns.</p>
+      <p class="price">₱150</p>
+      <button onclick="orderFood('Cheese Burger')">Order Now</button>
+    </div>
 
-  <!-- Story -->
-  <h2>Our Story</h2>
-  <p>Founded by friends with a shared love for coffee and community, Sunrise Roastery began as a tiny corner café. Today, we continue to roast small batches of premium beans and craft every pastry by hand, keeping the same passion that started it all.</p>
-  <hr>
+    <!-- Food Item 2 -->
+    <div class="card">
+      <img src="https://cdn.pixabay.com/photo/2017/12/09/08/18/pizza-3007395_1280.jpg" alt="Hawaiian Pizza" />
+      <h3>Hawaiian Pizza</h3>
+      <p>Classic pizza with ham, pineapple, mozzarella, and tomato sauce.</p>
+      <p class="price">₱300</p>
+      <button onclick="orderFood('Hawaiian Pizza')">Order Now</button>
+    </div>
 
-  <!-- Menu -->
-  <h2>Our Menu Preview</h2>
-  <ul>
-    <li onclick="showCoffee('vanilla')">Vanilla Cold Brew</li>
-    <li onclick="showCoffee('hazelnut')">Hazelnut Cappuccino</li>
-    <li onclick="showCoffee('matcha')">Matcha Latte</li>
-    <li onclick="showCoffee('croissant')">Almond Croissant</li>
-    <li onclick="showCoffee('panini')">Turkey Pesto Panini</li>
-  </ul>
-  <hr>
+    <!-- Food Item 3 -->
+    <div class="card">
+      <img src="https://cdn.pixabay.com/photo/2017/09/02/13/13/spaghetti-2707322_1280.jpg" alt="Carbonara Pasta" />
+      <h3>Carbonara Pasta</h3>
+      <p>Creamy pasta with bacon bits, egg, and parmesan cheese.</p>
+      <p class="price">₱180</p>
+      <button onclick="orderFood('Carbonara Pasta')">Order Now</button>
+    </div>
 
-  <!-- Coffee Details -->
-  <div id="vanilla" class="coffee-detail">
-    <img src="https://frostingandfettuccine.com/wp-content/uploads/2022/12/Vanilla-Iced-Coffee-5.jpg" alt="Vanilla Cold Brew">
-    <h3>Vanilla Cold Brew</h3>
-    <p>A smooth and refreshing cold brew infused with natural vanilla. Perfectly balanced, lightly sweet, and great for hot days.</p>
+    <!-- Food Item 4 -->
+    <div class="card">
+      <img src="https://cdn.pixabay.com/photo/2017/06/26/02/47/coffee-2446648_1280.jpg" alt="Cappuccino Coffee" />
+      <h3>Cappuccino Coffee</h3>
+      <p>Rich espresso with steamed milk and foam, perfect for mornings.</p>
+      <p class="price">₱120</p>
+      <button onclick="orderFood('Cappuccino Coffee')">Order Now</button>
+    </div>
+
+    <!-- Food Item 5 -->
+    <div class="card">
+      <img src="https://cdn.pixabay.com/photo/2016/03/05/19/02/salad-1238248_1280.jpg" alt="Fresh Garden Salad" />
+      <h3>Fresh Garden Salad</h3>
+      <p>Crisp greens, cherry tomatoes, cucumbers, and honey dressing.</p>
+      <p class="price">₱130</p>
+      <button onclick="orderFood('Fresh Garden Salad')">Order Now</button>
+    </div>
+
+    <!-- Food Item 6 -->
+    <div class="card">
+      <img src="https://cdn.pixabay.com/photo/2015/04/08/13/13/chocolate-cake-712661_1280.jpg" alt="Chocolate Lava Cake" />
+      <h3>Chocolate Lava Cake</h3>
+      <p>Warm chocolate cake with gooey center, served with ice cream.</p>
+      <p class="price">₱200</p>
+      <button onclick="orderFood('Chocolate Lava Cake')">Order Now</button>
+    </div>
   </div>
 
-  <div id="hazelnut" class="coffee-detail">
-    <img src="https://wearenotmartha.com/wp-content/uploads/chocolate-hazelnut-cookie-cold-brew-featured.jpg" alt="Hazelnut Cappuccino">
-    <h3>Hazelnut Cappuccino</h3>
-    <p>A creamy cappuccino with a nutty twist. The roasted hazelnut flavor blends beautifully with espresso and frothy milk.</p>
+  <!-- Order Summary -->
+  <div id="summary">
+    <h2>🧾 Order Summary</h2>
+    <ul id="orderList"></ul>
   </div>
 
-  <div id="matcha" class="coffee-detail">
-    <img src="https://cdn.loveandlemons.com/wp-content/uploads/2023/06/iced-matcha-latte.jpg" alt="Matcha Latte">
-    <h3>Matcha Latte</h3>
-    <p>Earthy, vibrant green tea blended with creamy milk. A calming, antioxidant-rich drink with a slightly sweet flavor.</p>
-  </div>
-
-  <div id="croissant" class="coffee-detail">
-    <img src="https://media.istockphoto.com/id/1717126433/photo/cream-is-poured-into-a-glass-with-iced-coffee-on-a-gray-background.jpg?s=612x612&w=0&k=20&c=6mS7SR6JY4LIvhmhV0KEbI6e2_Vy5xtlyd9Kr_AGU6A=" alt="Almond Croissant">
-    <h3>Almond Croissant</h3>
-    <p>A buttery, flaky pastry filled with almond cream and topped with roasted almond slices and powdered sugar.</p>
-  </div>
-
-  <div id="panini" class="coffee-detail">
-    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRD29MoyU-iuL2uEQN0RcSl2YtjKe0O60VGRg&s" alt="Turkey Pesto Panini">
-    <h3>Turkey Pesto Panini</h3>
-    <p>Grilled to perfection, this panini features smoked turkey, fresh mozzarella, tomatoes, and basil pesto on rustic bread.</p>
-  </div>
-
-  <!-- Footer -->
-  <footer>
-    <p>&copy; 2025 Sunrise Roastery. All rights reserved.</p>
-  </footer>
-
-  <!-- Navigation -->
-  <nav>
-    <a href="about.html">About</a>
-  </nav>
-
-  <!-- Script -->
   <script>
-    function showCoffee(id) {
-      // hide all details
-      document.querySelectorAll('.coffee-detail').forEach(detail => detail.style.display = "none");
-      // show selected one
-      const selected = document.getElementById(id);
-      selected.style.display = "block";
-      window.scrollTo({ top: selected.offsetTop - 20, behavior: 'smooth' });
+    function orderFood(item) {
+      alert(`You ordered ${item}!`);
+      const list = document.getElementById("orderList");
+      const newItem = document.createElement("li");
+      newItem.textContent = `✅ ${item}`;
+      list.appendChild(newItem);
     }
   </script>
-
 </body>
 </html>
