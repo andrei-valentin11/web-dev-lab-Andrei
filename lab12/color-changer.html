@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Color Changer</title>
+  <link rel="stylesheet" href="theme.css">
+</head>
+<body>
+  <h2>Change Page Background Color</h2>
+
+  <select id="color-select">
+    <option value="white">White</option>
+    <option value="lightblue">Light Blue</option>
+    <option value="lightgreen">Light Green</option>
+  </select>
+
+  <button id="change-color-btn">Change Background</button>
+
+  <script>
+    document.getElementById("change-color-btn").addEventListener("click", function() {
+      const selectedColor = document.getElementById("color-select").value;
+      document.body.style.backgroundColor = selectedColor;
+    });
+  </script>
+</body>
+</html>
