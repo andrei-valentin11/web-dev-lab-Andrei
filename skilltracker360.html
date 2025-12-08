@@ -1,0 +1,952 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AgriTrack360 — Interactive Prototype</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root{
+      /* Adjusted accent to a more "Agricultural" Green/Teal */
+      --accent:#2d8a5b;
+      --accent-2:#7bcfa8;
+      --bg: #f0fdf4;
+      --card:#ffffff;
+      --muted:#6b7d7c;
+      --glass: rgba(45,138,91,0.06);
+      --danger:#e14d4d;
+      --text:#172a2a;
+    }
+    [data-theme="dark"]{
+      --bg:#0b120f;
+      --card:#0a1411;
+      --muted:#9fb3b2;
+      --text:#e6f6f5;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg,var(--bg), #ffffff 120%);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      min-height:100vh;
+    }
+
+    header{
+      padding:14px 20px;
+      display:flex;
+      align-items:center;
+      gap:14px;
+      border-bottom:1px solid rgba(0,0,0,0.06);
+      position:sticky;
+      top:0; z-index:40;
+      background:linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.5));
+      backdrop-filter: blur(6px);
+    }
+    header h1{ margin:0; font-size:18px; color:var(--accent); }
+    .top-actions { margin-left:auto; display:flex; gap:8px; align-items:center; }
+
+    button {
+      background:var(--accent);
+      color:white;
+      border:0;
+      padding:8px 12px;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:600;
+    }
+    button.ghost{
+      background:transparent;
+      color:var(--accent);
+      border:1px solid var(--accent);
+    }
+    button.small { padding:6px 8px; font-size:13px; }
+    .container{ max-width:1200px; margin:22px auto; padding:0 18px; }
+
+    .layout { display:grid; grid-template-columns: 260px 1fr 340px; gap:18px; align-items:start; }
+    @media (max-width:1100px){ .layout { grid-template-columns: 1fr; } .right-col { order: 3; } .left-col { order: 2; } .main-col { order: 1; } }
+
+    .card{
+      background:var(--card);
+      border-radius:12px;
+      padding:14px;
+      box-shadow: 0 8px 28px rgba(10,30,30,0.04);
+    }
+
+    /* left nav */
+    .nav { display:flex; flex-direction:column; gap:10px; position:sticky; top:72px; }
+    .nav .logo { display:flex; gap:10px; align-items:center; padding-bottom:6px; border-bottom:1px dashed rgba(0,0,0,0.04); }
+    .nav .logo svg{ width:34px; height:34px; }
+    .nav .menu { margin-top:8px; display:flex; flex-direction:column; gap:8px; }
+    .nav .menu button{ display:flex; gap:8px; align-items:center; justify-content:flex-start; background:transparent; color:var(--text); border-radius:8px; padding:10px; border:1px solid transparent; font-weight:600; cursor:pointer; }
+    .nav .menu button.active{ background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:white; border:1px solid rgba(0,0,0,0.06); box-shadow: 0 6px 18px rgba(43,122,120,0.08); }
+    .nav .menu button svg { width:20px; height:20px; opacity:0.9; }
+
+    /* main */
+    .heading { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:10px; }
+    .player-panel { display:flex; gap:12px; align-items:center; }
+    .avatar { width:54px; height:54px; border-radius:10px; background:linear-gradient(135deg,var(--accent),var(--accent-2)); display:flex; align-items:center; justify-content:center; color:white; font-weight:700; font-size:18px; }
+    .xp-bar { height:12px; background:var(--glass); border-radius:10px; width:240px; overflow:hidden; }
+    .xp-fill { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent-2)); width:0%; transition:width .6s ease; }
+
+    /* navigator tabs */
+    .skill-tabs { display:flex; gap:8px; margin-bottom:14px; }
+    .skill-tab { padding:8px 10px; border-radius:8px; cursor:pointer; background:var(--glass); font-weight:700; color:var(--accent); }
+    .skill-tab.active { background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:white; }
+
+    /* mini-game area */
+    .game-area { min-height:320px; display:flex; gap:16px; align-items:stretch; }
+    .game-left { flex:1; display:flex; flex-direction:column; gap:12px; }
+    canvas.game-canvas { width:100%; height:280px; border-radius:10px; background: linear-gradient(180deg, #fff, #f7fffd); border:1px solid rgba(0,0,0,0.04); }
+    .game-controls { display:flex; gap:8px; align-items:center; }
+
+    /* right column */
+    .stats { display:flex; flex-direction:column; gap:10px; }
+    .stats .small { color:var(--muted); font-size:13px; }
+
+    table.students { width:100%; border-collapse:collapse; font-size:13px; }
+    table.students th, table.students td { text-align:left; padding:8px; border-bottom:1px solid rgba(0,0,0,0.04); }
+
+    footer { margin-top:18px; text-align:center; color:var(--muted); font-size:13px; padding-bottom:40px; }
+
+    /* badges */
+    .badges { display:flex; gap:8px; flex-wrap:wrap; }
+    .badge { padding:6px 8px; border-radius:999px; background:var(--glass); font-weight:700; color:var(--accent); font-size:13px; }
+
+    /* tiny helpers */
+    .muted { color:var(--muted); font-size:13px; }
+    .center { display:flex; align-items:center; justify-content:center; }
+    .score { font-size:22px; font-weight:800; color:var(--accent); }
+
+    /* animations */
+    .pulse { animation:pulse 2s infinite; }
+    @keyframes pulse { 0% { transform:scale(1)} 50% { transform:scale(1.02)} 100% { transform:scale(1)} }
+  </style>
+</head>
+<body data-theme="light">
+  <header>
+    <h1>AgriTrack360 — Interactive Prototype</h1>
+    <div class="top-actions">
+      <button id="darkToggle" class="small ghost">Dark</button>
+      <button id="demoPopulate" class="small">Load Demo Data</button>
+      <button id="exportReport" class="small ghost">Export CSV</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="layout">
+      <aside class="left-col nav card">
+        <div class="logo">
+          <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="26" fill="#7bcfa8"/><path d="M32 12c0 0 14 6 14 20s-8 20-14 20c-6 0-14-6-14-20s14-20 14-20z" fill="#fff"/><path d="M32 32v20" stroke="#2d8a5b" stroke-width="3" stroke-linecap="round"/></svg>
+          <div>
+            <div style="font-weight:800;color:var(--accent)">AgriTrack360</div>
+            <div class="muted" style="font-size:12px">Agri-Fishery Arts</div>
+          </div>
+        </div>
+
+        <div class="menu" style="margin-top:12px;">
+          <button id="navDashboard" class="active" data-section="dashboard">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" fill="currentColor" /></svg>
+            Dashboard
+          </button>
+
+          <button id="navPlay" data-section="play">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 3v18l15-9L5 3z" fill="currentColor"/></svg>
+            Skill Navigator
+          </button>
+
+          <button id="navTeacher" data-section="teacher">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5z" fill="currentColor"/></svg>
+            Teacher / Class
+          </button>
+
+          <div style="height:10px"></div>
+          <div class="muted" style="font-size:12px">Quick actions</div>
+          <div style="display:flex;gap:8px;margin-top:8px;">
+            <button id="btnReset" class="small ghost">Reset</button>
+            <button id="btnHelp" class="small ghost">Help</button>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;">
+          <div class="muted" style="font-size:12px">Badges</div>
+          <div class="badges" id="badgesArea">
+            </div>
+        </div>
+      </aside>
+
+      <section class="main-col card">
+        <div id="loginPanel" class="card" style="margin-bottom:12px;">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <strong>Sign In (Simulation)</strong>
+              <div class="muted" style="margin-top:6px">Pick an account to preview student or teacher flows.</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <select id="accountSelect" style="padding:8px;border-radius:8px;border:1px solid #e6eeee;">
+                </select>
+              <button id="btnSignIn">Sign In</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="section-dashboard">
+          <div class="heading">
+            <div class="player-panel">
+              <div class="avatar" id="avatarInitial">JD</div>
+              <div>
+                <div style="font-weight:800" id="playerName">Guest Student</div>
+                <div class="muted" id="playerCourse">Agri-Fishery Arts — General</div>
+                <div style="height:8px"></div>
+                <div style="display:flex;gap:8px;align-items:center">
+                  <div style="font-size:12px;" class="muted">XP</div>
+                  <div class="xp-bar"><div class="xp-fill" id="xpFill" style="width:0%"></div></div>
+                  <div style="min-width:48px;text-align:right;font-weight:700" id="xpText">0 XP</div>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+              <div class="muted">Average Mastery</div>
+              <div class="score" id="scoreAvg">—</div>
+              <div class="muted" style="font-size:12px">Streak: <span id="streak">0</span> days</div>
+            </div>
+          </div>
+
+          <div style="margin-top:12px;display:flex;gap:12px;align-items:flex-start">
+            <div style="flex:1">
+              <div class="card" style="padding:12px;margin-bottom:12px">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <strong>Progress Overview</strong>
+                  <div class="muted">Last activity: <span id="lastActivity">—</span></div>
+                </div>
+                <canvas id="overviewChart" height="180" style="margin-top:12px;"></canvas>
+              </div>
+
+              <div class="card" style="padding:12px;">
+                <strong>Field Practice</strong>
+                <div class="muted" style="margin-top:8px">Simulate agricultural tasks to gain XP and improve mastery.</div>
+
+                <div class="skill-tabs" style="margin-top:12px" id="skillTabs">
+                  <div class="skill-tab active" data-skill="Poultry">Poultry</div>
+                  <div class="skill-tab" data-skill="Aquaculture">Aquaculture</div>
+                  <div class="skill-tab" data-skill="Crops">Crops</div>
+                  <div class="skill-tab" data-skill="Processing">Processing</div>
+                </div>
+
+                <div class="game-area">
+                  <div class="game-left">
+                    <div style="display:flex;justify-content:space-between;align-items:center">
+                      <div>
+                        <strong id="gameTitle">Poultry — Feed Management</strong>
+                        <div class="muted" id="gameDesc" style="margin-top:6px">Balance the feed distribution evenly. Accuracy increases mastery.</div>
+                      </div>
+                      <div class="muted center" style="min-width:100px">
+                        <div>Session XP</div>
+                        <div style="font-weight:800;font-size:20px" id="sessionXP">0</div>
+                      </div>
+                    </div>
+
+                    <canvas id="gameCanvas" class="game-canvas"></canvas>
+
+                    <div class="game-controls">
+                      <button id="btnStartGame">Start Session</button>
+                      <button id="btnResetGame" class="ghost small">Reset</button>
+                      <div class="muted" style="margin-left:auto">Attempts: <span id="attempts">0</span></div>
+                    </div>
+                  </div>
+
+                  <aside style="width:320px" class="card">
+                    <div style="display:flex;justify-content:space-between;align-items:center">
+                      <strong>Skill Details</strong>
+                      <div class="muted">Mastery / XP</div>
+                    </div>
+
+                    <div style="margin-top:10px;">
+                      <div class="muted">Poultry Management</div>
+                      <div style="display:flex;gap:8px;align-items:center">
+                        <div style="flex:1;background:var(--glass);height:10px;border-radius:10px;overflow:hidden">
+                          <div id="skillPoultryFill" style="height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-2));"></div>
+                        </div>
+                        <div style="min-width:48px;text-align:right" id="skillPoultryVal">0%</div>
+                      </div>
+                    </div>
+
+                    <div style="margin-top:10px;">
+                      <div class="muted">Aquaculture</div>
+                      <div style="display:flex;gap:8px;align-items:center">
+                        <div style="flex:1;background:var(--glass);height:10px;border-radius:10px;overflow:hidden">
+                          <div id="skillAquacultureFill" style="height:100%;width:0%;background:linear-gradient(90deg,#6b8cff,#6bffea);"></div>
+                        </div>
+                        <div style="min-width:48px;text-align:right" id="skillAquacultureVal">0%</div>
+                      </div>
+                    </div>
+
+                    <div style="margin-top:10px;">
+                      <div class="muted">Crop Cultivation</div>
+                      <div style="display:flex;gap:8px;align-items:center">
+                        <div style="flex:1;background:var(--glass);height:10px;border-radius:10px;overflow:hidden">
+                          <div id="skillCropsFill" style="height:100%;width:0%;background:linear-gradient(90deg,#ffb86b,#f7e07c);"></div>
+                        </div>
+                        <div style="min-width:48px;text-align:right" id="skillCropsVal">0%</div>
+                      </div>
+                    </div>
+
+                    <div style="margin-top:10px;">
+                      <div class="muted">Food Processing</div>
+                      <div style="display:flex;gap:8px;align-items:center">
+                        <div style="flex:1;background:var(--glass);height:10px;border-radius:10px;overflow:hidden">
+                          <div id="skillProcessingFill" style="height:100%;width:0%;background:linear-gradient(90deg,#e14d4d,#ff8c8c);"></div>
+                        </div>
+                        <div style="min-width:48px;text-align:right" id="skillProcessingVal">0%</div>
+                      </div>
+                    </div>
+
+                    <hr style="margin:12px 0;border:none;border-top:1px dashed rgba(0,0,0,0.04)">
+
+                    <div class="muted">Quick tips</div>
+                    <ul style="margin-top:8px;font-size:13px" class="muted">
+                      <li id="tip1">Poultry: Monitor temperature and feed conversion ratio.</li>
+                      <li id="tip2">Aquaculture: Check dissolved oxygen and pH regularly.</li>
+                      <li id="tip3">Crops: Identify pests early to minimize yield loss.</li>
+                      <li id="tip4">Processing: Ensure sterility during packaging and sealing.</li>
+                    </ul>
+
+                  </aside>
+
+                </div>
+              </div>
+
+            </div>
+
+            <aside style="width:320px" class="right-col">
+              <div class="card">
+                <strong>Session Summary</strong>
+                <div style="margin-top:8px" id="sessionLog">No activity yet.</div>
+              </div>
+
+              <div class="card" style="margin-top:12px">
+                <strong>Achievements</strong>
+                <div class="muted" style="margin-top:8px">Earn XP to unlock badges and show progress.</div>
+                <div style="margin-top:10px" id="achievementsArea"></div>
+              </div>
+
+              <div class="card" style="margin-top:12px">
+                <strong>Export / Utilities</strong>
+                <div style="margin-top:8px" class="muted">Download your data or teacher exports.</div>
+                <div style="display:flex;gap:8px;margin-top:10px">
+                  <button id="btnExportMe" class="small">Export My Data</button>
+                  <button id="btnClearLocal" class="small ghost">Clear Local</button>
+                </div>
+              </div>
+
+            </aside>
+          </div>
+        </div>
+
+        <div id="section-teacher" style="display:none; margin-top:12px">
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div>
+                <strong>Teacher — Class Overview</strong>
+                <div class="muted" style="margin-top:6px">Overview of all demo students plus current session</div>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center">
+                <button id="btnLoadClass" class="small">Load Sample Class</button>
+                <button id="btnExportClass" class="small ghost">Export Class CSV</button>
+              </div>
+            </div>
+
+            <div style="margin-top:12px;display:flex;gap:12px;align-items:flex-start">
+              <div style="flex:1">
+                <canvas id="classChart" height="220"></canvas>
+              </div>
+              <aside style="width:340px">
+                <table class="students">
+                  <thead><tr><th>Name</th><th>Avg</th><th>XP</th></tr></thead>
+                  <tbody id="classTableBody"></tbody>
+                </table>
+              </aside>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <aside class="right-col card">
+        <div>
+          <strong>Quick Metrics</strong>
+          <div style="margin-top:8px" class="muted">Useful at-a-glance stats</div>
+        </div>
+
+        <div style="margin-top:12px">
+          <div class="muted">Total XP</div>
+          <div style="font-weight:800;font-size:22px" id="totalXP">0</div>
+        </div>
+
+        <div style="margin-top:12px">
+          <div class="muted">Mastery Avg</div>
+          <div style="font-weight:800;font-size:22px" id="masteryAvg">—</div>
+        </div>
+
+        <div style="margin-top:12px">
+          <div class="muted">Last Score</div>
+          <div style="font-weight:800;font-size:22px" id="lastScore">—</div>
+        </div>
+
+        <div style="margin-top:16px">
+          <strong>Quick Actions</strong>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+            <button id="btnPracticeRandom" class="small ghost">Auto-practice (demo)</button>
+            <button id="btnGiveXP" class="small ghost">Give 10 XP</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <footer>
+      Prototype — AgriTrack360. Interactive demo only (no backend). Use for proposal presentations.
+    </footer>
+  </main>
+
+  <script>
+  /***************************************************************************
+   * AgriTrack360 — Interactive Prototype (single-file)
+   * - Account simulation (student/teacher)
+   * - Skill mini-sessions (4 Agri skills) — simple, extendable mini-games
+   * - XP, mastery, badges saved to localStorage
+   * - Teacher class view & CSV export
+   ***************************************************************************/
+
+  // ---------- Config & Demo Data ----------
+  const LS_KEY = 'agritrack360_v4_data_v1';
+
+  // demo class (teacher)
+  const demoStudents = [
+    { id: 'STU-01', name: 'Juan D. Cruz', course:'Agri-Fishery Arts', xp:120, skills:{Poultry:60,Aquaculture:45,Crops:70,Processing:50}, last: null, streak:2 },
+    { id: 'STU-02', name: 'Maria S. Reyes', course:'Agri-Fishery Arts', xp:220, skills:{Poultry:75,Aquaculture:65,Crops:80,Processing:60}, last: null, streak:5 },
+    { id: 'STU-03', name: 'Pedro A. Santos', course:'Agri-Fishery Arts', xp:60, skills:{Poultry:40,Aquaculture:35,Crops:55,Processing:45}, last: null, streak:1 },
+  ];
+
+  // default current account (guest student)
+  const defaultAccount = { id:'ME', name:'Guest Student', course:'Agri-Fishery Arts', xp:0, skills:{Poultry:10,Aquaculture:8,Crops:12,Processing:6}, streak:0, badges:[], logs:[] };
+
+  // ---------- State ----------
+  let state = { accounts: [defaultAccount], current: 0, lastUpdated: null };
+
+  // DOM refs
+  const themeBtn = document.getElementById('darkToggle');
+  const demoPopulateBtn = document.getElementById('demoPopulate');
+  const exportReportBtn = document.getElementById('exportReport');
+  const accountSelect = document.getElementById('accountSelect');
+  const btnSignIn = document.getElementById('btnSignIn');
+  const avatarInitial = document.getElementById('avatarInitial');
+  const playerName = document.getElementById('playerName');
+  const playerCourse = document.getElementById('playerCourse');
+  const xpFill = document.getElementById('xpFill');
+  const xpText = document.getElementById('xpText');
+  const scoreAvg = document.getElementById('scoreAvg');
+  const masteryAvg = document.getElementById('masteryAvg');
+  const lastActivity = document.getElementById('lastActivity');
+
+  const skillTabs = document.getElementById('skillTabs');
+  const gameTitle = document.getElementById('gameTitle');
+  const gameDesc = document.getElementById('gameDesc');
+  const gameCanvas = document.getElementById('gameCanvas');
+  const btnStart = document.getElementById('btnStartGame');
+  const btnResetGame = document.getElementById('btnResetGame');
+  const sessionXPLabel = document.getElementById('sessionXP');
+  const attemptsLabel = document.getElementById('attempts');
+  const sessionLog = document.getElementById('sessionLog');
+
+  const skillPoultryFill = document.getElementById('skillPoultryFill');
+  const skillAquacultureFill = document.getElementById('skillAquacultureFill');
+  const skillCropsFill = document.getElementById('skillCropsFill');
+  const skillProcessingFill = document.getElementById('skillProcessingFill');
+  const skillPoultryVal = document.getElementById('skillPoultryVal');
+  const skillAquacultureVal = document.getElementById('skillAquacultureVal');
+  const skillCropsVal = document.getElementById('skillCropsVal');
+  const skillProcessingVal = document.getElementById('skillProcessingVal');
+
+  const overviewChartCtx = document.getElementById('overviewChart').getContext('2d');
+  const classChartCtx = document.getElementById('classChart') ? document.getElementById('classChart').getContext('2d') : null;
+
+  const badgesArea = document.getElementById('badgesArea');
+  const achievementsArea = document.getElementById('achievementsArea');
+
+  const sectionDashboard = document.getElementById('section-dashboard');
+  const sectionTeacher = document.getElementById('section-teacher');
+  const navDashboard = document.getElementById('navDashboard');
+  const navPlay = document.getElementById('navPlay');
+  const navTeacher = document.getElementById('navTeacher');
+
+  // charts
+  let overviewChart = null;
+  let classChart = null;
+
+  // mini-game runtime state
+  let currentSkill = 'Poultry';
+  let gameSession = null; // { running, attempts, xpEarned, score }
+  let gameCtx = gameCanvas.getContext('2d');
+  let animationFrameId;
+
+  // ---------- Utilities ----------
+  function loadState(){
+    const raw = localStorage.getItem(LS_KEY);
+    if (raw){
+      try { state = JSON.parse(raw); }
+      catch(e){ console.warn('Failed to parse saved state, resetting'); state = { accounts:[defaultAccount], current:0, lastUpdated:null }; saveState(); }
+    } else {
+      state = { accounts:[defaultAccount], current:0, lastUpdated: new Date().toISOString() };
+      saveState();
+    }
+  }
+  function saveState(){ state.lastUpdated = new Date().toISOString(); localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+
+  function formatDate(d){ if(!d) return '—'; return new Date(d).toLocaleString(); }
+
+  function clamp(v,min,max){ return Math.max(min,Math.min(max,v)); }
+
+  // average mastery:
+  function avgMastery(skills){
+    const vals = Object.values(skills || {});
+    if (!vals.length) return 0;
+    return Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
+  }
+
+  // ---------- UI Binding & Init ----------
+  function initUI(){
+    loadState();
+    refreshAccountOptions();
+
+    // charts
+    overviewChart = new Chart(overviewChartCtx, {
+      type:'radar',
+      data:{
+        labels:['Poultry','Aquaculture','Crops','Processing'],
+        datasets:[{ label:'Mastery %', data:[0,0,0,0], fill:true, backgroundColor:'rgba(45,138,91,0.18)', borderColor:'rgba(45,138,91,0.95)', pointBackgroundColor:'#fff' }]
+      },
+      options:{ scales:{ r: { suggestedMin:0, suggestedMax:100, ticks:{ stepSize:20 } } }, plugins:{ legend:{ display:false } } }
+    });
+
+    if (classChartCtx){
+      classChart = new Chart(classChartCtx, {
+        type:'bar',
+        data:{ labels:[], datasets:[{ label:'Avg Mastery (%)', data:[], backgroundColor:'rgba(45,138,91,0.85)' }] },
+        options:{ indexAxis:'y', plugins:{ legend:{ display:false } }, scales:{ x:{ suggestedMax:100 } } }
+      });
+    }
+
+    // initial render
+    renderAccount();
+    bindEvents();
+    renderBadges();
+    renderAchievements();
+    updateMiniGameUI();
+    refreshOverviewChart();
+  }
+
+  function refreshAccountOptions(){
+    accountSelect.innerHTML = '';
+    state.accounts.forEach((a,idx)=>{
+      const opt = document.createElement('option');
+      opt.value = idx; opt.textContent = a.name + (a.id === 'ME' ? ' (You)' : ' — ' + a.id);
+      accountSelect.appendChild(opt);
+    });
+  }
+
+  function renderAccount(){
+    const acc = state.accounts[state.current];
+    avatarInitial.textContent = acc.name.split(' ').map(s=>s[0]).slice(0,2).join('').toUpperCase();
+    playerName.textContent = acc.name;
+    playerCourse.textContent = acc.course || 'Agri-Fishery Arts';
+    xpText.textContent = (acc.xp || 0) + ' XP';
+    xpFill.style.width = Math.min(100, (acc.xp % 200) / 2) + '%'; 
+    scoreAvg.textContent = avgMastery(acc.skills) + '%';
+    masteryAvg.textContent = avgMastery(acc.skills) + '%';
+    totalXPDisplay();
+    lastActivity.textContent = acc.last ? formatDate(acc.last) : '—';
+    
+    // update skill bars
+    updateSkillDisplays();
+  }
+
+  function updateSkillDisplays(){
+    const acc = state.accounts[state.current];
+    const s = acc.skills || {};
+    
+    // Helper to safely set
+    const setSkill = (fill, val, score) => {
+      if(fill) fill.style.width = (score||0) + '%';
+      if(val) val.textContent = (score||0) + '%';
+    };
+
+    setSkill(skillPoultryFill, skillPoultryVal, s.Poultry);
+    setSkill(skillAquacultureFill, skillAquacultureVal, s.Aquaculture);
+    setSkill(skillCropsFill, skillCropsVal, s.Crops);
+    setSkill(skillProcessingFill, skillProcessingVal, s.Processing);
+  }
+
+  function totalXPDisplay(){ document.getElementById('totalXP').textContent = state.accounts.reduce((s,a)=>s+(a.xp||0),0); }
+
+  function bindEvents(){
+    themeBtn.addEventListener('click', ()=>{ toggleTheme(); });
+    demoPopulateBtn.addEventListener('click', ()=>{ loadDemoClass(); });
+    
+    btnSignIn.addEventListener('click', ()=>{ signInAccount(parseInt(accountSelect.value)); });
+    document.getElementById('btnPracticeRandom').addEventListener('click', ()=>{ autoPractice(); });
+    document.getElementById('btnGiveXP').addEventListener('click', ()=>{ grantXP(10); });
+
+    document.getElementById('btnClearLocal').addEventListener('click', ()=>{ if(confirm('Clear local data?')){ localStorage.removeItem(LS_KEY); location.reload(); } });
+    document.getElementById('btnReset').addEventListener('click', ()=>{ if(confirm('Reset current account?')){ state.accounts[state.current].xp=0; state.accounts[state.current].skills={Poultry:0,Aquaculture:0,Crops:0,Processing:0}; saveState(); renderAccount(); } });
+
+    document.getElementById('btnExportMe').addEventListener('click', ()=>{ exportMyData(); });
+
+    // nav buttons
+    navDashboard.addEventListener('click', ()=>{ showSection('dashboard'); setNavActive(navDashboard); });
+    navPlay.addEventListener('click', ()=>{ showSection('play'); setNavActive(navPlay); });
+    navTeacher.addEventListener('click', ()=>{ showSection('teacher'); setNavActive(navTeacher); });
+
+    // teacher actions
+    document.getElementById('btnLoadClass').addEventListener('click', ()=>{ loadDemoClass(); showSection('teacher'); setNavActive(navTeacher); });
+    document.getElementById('btnExportClass').addEventListener('click', ()=>{ exportClassCSV(); });
+    exportReportBtn.addEventListener('click', ()=>{ exportClassCSV(); });
+
+    // skill tabs
+    skillTabs.addEventListener('click', e=>{
+      const tab = e.target.closest('.skill-tab');
+      if(!tab) return;
+      Array.from(skillTabs.children).forEach(c=>c.classList.remove('active'));
+      tab.classList.add('active');
+      currentSkill = tab.dataset.skill;
+      updateMiniGameUI();
+    });
+
+    // game controls
+    btnStart.addEventListener('click', ()=>{ startGameSession(); });
+    btnResetGame.addEventListener('click', ()=>{ resetGame(); });
+
+    // canvas pointer events
+    gameCanvas.addEventListener('mousedown', (e)=>{ if(gameSession && gameSession.running) gameOnPointerDown(e); });
+    gameCanvas.addEventListener('mousemove', (e)=>{ if(gameSession && gameSession.running) gameOnPointerMove(e); });
+    window.addEventListener('mouseup', (e)=>{ if(gameSession && gameSession.running) gameOnPointerUp(e); });
+
+    document.getElementById('btnHelp').addEventListener('click', ()=>{ alert('AgriTrack360: Earn XP by completing tasks in Poultry, Aquaculture, Crops, and Food Processing. Teacher view available.'); });
+  }
+
+  function setNavActive(btn){
+    document.querySelectorAll('.nav .menu button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  function showSection(s){
+    if(s==='dashboard' || s==='play'){ sectionDashboard.style.display='block'; sectionTeacher.style.display='none'; }
+    if(s==='teacher'){ sectionTeacher.style.display='block'; sectionDashboard.style.display='none'; }
+  }
+
+  // ---------- Accounts & Demo ----------
+  function loadDemoClass(){
+    state.accounts = [ state.accounts[0] ]; // keep first (ME)
+    demoStudents.forEach(s=>{
+      const a = { id:s.id, name:s.name, course:s.course || 'Agri-Fishery Arts', xp:s.xp||0, skills:s.skills||{Poultry:0,Aquaculture:0,Crops:0,Processing:0}, streak:s.streak || 0, badges:[], last: s.last };
+      state.accounts.push(a);
+    });
+    saveState();
+    refreshAccountOptions();
+    renderAccount();
+    refreshClassDisplay();
+    alert('Demo class loaded.');
+  }
+
+  function signInAccount(idx){
+    if(isNaN(idx)) return;
+    state.current = idx;
+    saveState();
+    renderAccount();
+    renderBadges();
+    renderAchievements();
+    refreshOverviewChart();
+    refreshClassDisplay();
+    showSection('dashboard');
+  }
+
+  // ---------- Mini-Game implementations ----------
+  function updateMiniGameUI(){
+    switch(currentSkill){
+      case 'Poultry':
+        gameTitle.textContent = 'Poultry — Feed Distribution';
+        gameDesc.textContent = 'Trace the feeding line evenly. Consistency increases bird health and mastery.';
+        break;
+      case 'Aquaculture':
+        gameTitle.textContent = 'Aquaculture — Water pH Balance';
+        gameDesc.textContent = 'Tap to add buffers and keep the pH meter in the green zone.';
+        break;
+      case 'Crops':
+        gameTitle.textContent = 'Crops — Pest Identification';
+        gameDesc.textContent = 'Click on the invading pests quickly before they damage the crops.';
+        break;
+      case 'Processing':
+        gameTitle.textContent = 'Food Processing — Vacuum Sealing';
+        gameDesc.textContent = 'Hold the seal button for the perfect amount of time to secure freshness.';
+        break;
+    }
+    // clear canvas
+    gameCtx.clearRect(0,0,gameCanvas.width, gameCanvas.height);
+    gameCtx.fillStyle = '#f0fdf4';
+    gameCtx.fillRect(0,0,gameCanvas.width, gameCanvas.height);
+    gameCtx.fillStyle = '#6b7d7c';
+    gameCtx.font = '14px Inter';
+    gameCtx.fillText('Press "Start Session" to begin simulation.', 20, 140);
+  }
+
+  function startGameSession(){
+    gameSession = { running:true, attempts:0, score:0, type:currentSkill, objects:[] };
+    attemptsLabel.textContent = parseInt(attemptsLabel.textContent)+1;
+    
+    // Init game logic based on type
+    if(currentSkill === 'Poultry' || currentSkill === 'Processing'){
+       // Tracing / Timing mechanic
+       gameSession.target = Math.random() * 0.5 + 0.2; 
+    } else if (currentSkill === 'Crops'){
+       // Spawning pests
+       for(let i=0; i<5; i++){
+         gameSession.objects.push({x:Math.random()*280, y:Math.random()*260, r:10, hit:false});
+       }
+    }
+    
+    animateGame();
+  }
+
+  function resetGame(){
+    gameSession = null;
+    cancelAnimationFrame(animationFrameId);
+    updateMiniGameUI();
+    sessionXPLabel.textContent = '0';
+  }
+
+  function animateGame(){
+    if(!gameSession || !gameSession.running) return;
+    
+    const w = gameCanvas.width = gameCanvas.clientWidth;
+    const h = gameCanvas.height = gameCanvas.clientHeight;
+    gameCtx.clearRect(0,0,w,h);
+
+    if(currentSkill === 'Poultry'){
+      // Draw path to trace
+      gameCtx.beginPath();
+      gameCtx.strokeStyle = '#ddd';
+      gameCtx.lineWidth = 15;
+      gameCtx.moveTo(20, h/2);
+      gameCtx.bezierCurveTo(w/3, h/2 - 50, w/1.5, h/2 + 50, w-20, h/2);
+      gameCtx.stroke();
+      
+      gameCtx.fillStyle = '#2d8a5b';
+      gameCtx.fillText('Trace the gray feed line (Simulated)', 20, 30);
+      
+      // Auto-win simulation for prototype
+      gameCtx.beginPath();
+      gameCtx.strokeStyle = 'rgba(45,138,91,0.5)';
+      gameCtx.lineWidth = 5;
+      gameCtx.moveTo(20, h/2);
+      gameCtx.lineTo(w-20, h/2); 
+      gameCtx.stroke();
+    } 
+    else if (currentSkill === 'Aquaculture'){
+      // pH Meter
+      gameCtx.fillStyle = '#ddd';
+      gameCtx.fillRect(w/2 - 20, 50, 40, 200);
+      gameCtx.fillStyle = '#7bcfa8'; // Safe zone
+      gameCtx.fillRect(w/2 - 20, 120, 40, 60);
+      
+      gameCtx.fillStyle = '#2d8a5b';
+      gameCtx.fillRect(w/2 - 25, 100 + Math.sin(Date.now()/500)*80, 50, 4); // moving needle
+      gameCtx.fillText('Keep needle in green (Simulated)', 20, 30);
+    }
+    else if (currentSkill === 'Crops'){
+      gameCtx.fillStyle = '#e14d4d';
+      gameSession.objects.forEach(o=>{
+        if(!o.hit){
+           gameCtx.beginPath();
+           gameCtx.arc(o.x, o.y, o.r, 0, Math.PI*2);
+           gameCtx.fill();
+        }
+      });
+      gameCtx.fillStyle = '#2d8a5b';
+      gameCtx.fillText('Click the red pests! (Simulated)', 20, 30);
+    }
+    else {
+      // Processing
+      gameCtx.fillStyle = '#2d8a5b';
+      gameCtx.fillText('Vacuum sealing in progress...', 20, 140);
+      gameCtx.fillStyle = '#ddd';
+      gameCtx.fillRect(50, 160, w-100, 20);
+      gameCtx.fillStyle = '#e14d4d';
+      gameCtx.fillRect(50, 160, (Date.now()%2000)/2000 * (w-100), 20);
+    }
+
+    animationFrameId = requestAnimationFrame(animateGame);
+  }
+  
+  // Game Interactions
+  function gameOnPointerDown(e){
+    // simplified interaction for prototype
+    finishSession(Math.floor(Math.random() * 20) + 10);
+  }
+  function gameOnPointerMove(e){}
+  function gameOnPointerUp(e){}
+
+  function finishSession(score){
+    gameSession.running = false;
+    cancelAnimationFrame(animationFrameId);
+    
+    // Earn XP and Skill
+    const xp = Math.floor(score/2);
+    grantXP(xp);
+    improveSkill(currentSkill, Math.floor(score/5));
+    
+    sessionXPLabel.textContent = xp;
+    
+    // Log
+    const log = `Practiced ${currentSkill}: +${xp} XP`;
+    sessionLog.textContent = log;
+    
+    // Draw Result
+    gameCtx.fillStyle = 'rgba(255,255,255,0.8)';
+    gameCtx.fillRect(0,0,gameCanvas.width, gameCanvas.height);
+    gameCtx.fillStyle = '#2d8a5b';
+    gameCtx.font = 'bold 20px Inter';
+    gameCtx.fillText(`Success! +${xp} XP`, 60, 140);
+  }
+
+  // ---------- Logic Logic ----------
+  function grantXP(amount){
+    const acc = state.accounts[state.current];
+    acc.xp = (acc.xp||0) + amount;
+    acc.last = new Date().toISOString();
+    
+    // check badges
+    if(acc.xp >= 50 && !acc.badges.includes('Novice Farmer')) acc.badges.push('Novice Farmer');
+    if(acc.xp >= 150 && !acc.badges.includes('Green Thumb')) acc.badges.push('Green Thumb');
+    if(acc.xp >= 300 && !acc.badges.includes('Master Harvester')) acc.badges.push('Master Harvester');
+
+    saveState();
+    renderAccount();
+    renderAchievements();
+  }
+
+  function improveSkill(skillName, amount){
+    const acc = state.accounts[state.current];
+    if(!acc.skills[skillName]) acc.skills[skillName] = 0;
+    acc.skills[skillName] = clamp(acc.skills[skillName] + amount, 0, 100);
+    saveState();
+    renderAccount(); 
+    refreshOverviewChart();
+  }
+
+  function autoPractice(){
+    const s = ['Poultry','Aquaculture','Crops','Processing'][Math.floor(Math.random()*4)];
+    currentSkill = s;
+    updateMiniGameUI();
+    setTimeout(()=>{ finishSession(25); }, 500);
+  }
+
+  function renderAchievements(){
+    const acc = state.accounts[state.current];
+    badgesArea.innerHTML = '';
+    achievementsArea.innerHTML = '';
+    
+    if(acc.badges.length === 0){
+      badgesArea.innerHTML = '<div class="muted" style="font-size:11px">No badges yet</div>';
+      achievementsArea.textContent = 'Keep practicing to unlock badges!';
+    }
+    
+    acc.badges.forEach(b=>{
+      // badge pill
+      const el = document.createElement('div'); el.className='badge'; el.textContent=b;
+      badgesArea.appendChild(el);
+      // achievement list
+      const li = document.createElement('div'); 
+      li.innerHTML = `<strong>${b}</strong><br><span class="muted" style="font-size:12px">Unlocked</span>`;
+      li.style.marginBottom = '8px';
+      achievementsArea.appendChild(li);
+    });
+  }
+
+  function refreshOverviewChart(){
+    const acc = state.accounts[state.current];
+    const s = acc.skills || {};
+    overviewChart.data.datasets[0].data = [
+      s.Poultry||0, s.Aquaculture||0, s.Crops||0, s.Processing||0
+    ];
+    overviewChart.update();
+  }
+
+  // ---------- Teacher / Class View ----------
+  function refreshClassDisplay(){
+    const tbody = document.getElementById('classTableBody');
+    tbody.innerHTML = '';
+    
+    let labels = [];
+    let data = [];
+    
+    state.accounts.forEach(acc=>{
+      if(acc.id === 'ME') return; // skip self in class list for now
+      
+      const avg = avgMastery(acc.skills);
+      labels.push(acc.name.split(' ')[0]);
+      data.push(avg);
+      
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${acc.name}</td><td>${avg}%</td><td>${acc.xp}</td>`;
+      tbody.appendChild(tr);
+    });
+    
+    if(classChart){
+      classChart.data.labels = labels;
+      classChart.data.datasets[0].data = data;
+      classChart.update();
+    }
+  }
+
+  function exportClassCSV(){
+    let csvContent = "data:text/csv;charset=utf-8,ID,Name,XP,Poultry,Aquaculture,Crops,Processing,AvgMastery\n";
+    state.accounts.forEach(a=>{
+      const s = a.skills;
+      const row = `${a.id},${a.name},${a.xp},${s.Poultry||0},${s.Aquaculture||0},${s.Crops||0},${s.Processing||0},${avgMastery(s)}`;
+      csvContent += row + "\n";
+    });
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "agritrack_class_data.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  function exportMyData(){
+    const a = state.accounts[state.current];
+    const json = JSON.stringify(a, null, 2);
+    const blob = new Blob([json], {type: "application/json"});
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `agritrack_${a.id}.json`;
+    link.click();
+  }
+  
+  function toggleTheme(){
+    const b = document.body;
+    if(b.getAttribute('data-theme')==='light') b.setAttribute('data-theme','dark');
+    else b.setAttribute('data-theme','light');
+  }
+
+  // Init
+  initUI();
+  </script>
+</body>
+</html>

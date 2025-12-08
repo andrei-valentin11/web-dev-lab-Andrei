@@ -1,0 +1,50 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-color: #f2f2f2;
+  margin: 0;
+}
+
+.hidden { display: none; }
+
+#login-screen, #game-screen, #teacher-screen {
+  padding: 20px;
+}
+
+#game-area {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+  margin-top: 20px;
+}
+
+#furniture-area {
+  width: 400px;
+  height: 400px;
+  border: 3px dashed #333;
+  position: relative;
+  background-color: #fff;
+}
+
+#parts-area {
+  display: flex;
+  flex-wrap: wrap;
+  width: 200px;
+  gap: 10px;
+}
+
+.draggable {
+  width: 80px;
+  cursor: grab;
+}
+
+#info-bar {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+#badge-area img {
+  width: 100px;
+  margin: 10px;
+}

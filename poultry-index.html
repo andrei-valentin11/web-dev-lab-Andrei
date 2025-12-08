@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Poultry Quest — Pixel Edition</title>
+<style>
+  /* ---------- Page layout ---------- */
+  :root{
+    --bg:#efe8d8;
+    --panel:#fff7ea;
+    --accent:#2b7a78;
+    --muted:#7f7a72;
+    --pixel: 8px; /* used for "pixelated" feel */
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%; margin:0; font-family: "Press Start 2P", monospace, system-ui, Arial; background:linear-gradient(#f7ecd9,#efe8d8); color:#1b1b1b}
+  .wrap{max-width:1000px;margin:18px auto;padding:12px;}
+  header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+  h1{margin:0;font-size:18px;color:var(--accent)}
+  .top-right{margin-left:auto;display:flex;gap:8px;align-items:center}
+  button{background:var(--accent);color:white;border:0;padding:8px 10px;border-radius:6px;cursor:pointer;font-weight:700}
+  .ghost{background:transparent;color:var(--accent);border:2px solid var(--accent)}
+  .panel{background:var(--panel);padding:12px;border-radius:10px;box-shadow: 0 6px 18px rgba(20,20,20,0.06);margin-bottom:12px}
+  .grid{display:grid;grid-template-columns: 540px 1fr;gap:12px}
+  @media(max-width:920px){.grid{grid-template-columns:1fr}}
+
+  /* ---------- Game Stage & Pixel Art Box ---------- */
+  .stage{height:360px;background:linear-gradient(#bce0d6,#fff7ea);border-radius:8px;position:relative;overflow:hidden;border:6px solid #d6c6ad}
+  .ground{position:absolute;left:0;right:0;bottom:0;height:110px;background:linear-gradient(#c9b089,#b7935b);box-shadow:inset 0 8px 0 rgba(255,255,255,0.08)}
+  .barn{position:absolute;left:18px;bottom:60px;width:110px;height:90px;background:#7a2b2b;border:4px solid #4f1b1b;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px}
+  .sun{position:absolute;right:18px;top:18px;background:radial-gradient(circle at 35% 35%, #fff2b8, #ffbe2e);width:70px;height:70px;border-radius:50%;box-shadow:0 6px 20px rgba(255,150,0,0.12)}
+
+  /* ---------- Pixel sprite container ---------- */
+  .sprite-wrap{position:absolute;left:50%;top:40%;transform:translate(-50%,-20%);width:160px;height:160px;display:flex;align-items:center;justify-content:center;filter:contrast(1.02)}
+  .pixel-img{width:140px;height:140px;image-rendering:pixelated;display:block;transition: transform 300ms ease}
+  .bounce{animation: bob 900ms infinite; }
+  @keyframes bob{0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}
+
+  /* ---------- Controls & Info ---------- */
+  .controls{display:flex;flex-direction:column;gap:8px}
+  .controls .row{display:flex;gap:8px}
+  .btn-ghost{background:transparent;border:2px dashed #b8b7b2;color:#444;padding:8px;border-radius:6px;flex:1;cursor:pointer}
+  .info{font-size:12px;color:var(--muted);line-height:1.4}
+  .log{height:140px;overflow:auto;background:#fff;padding:8px;border-radius:6px;border:2px inset rgba(0,0,0,0.03);font-size:12px}
+  .score{font-size:14px;font-weight:800;color:var(--accent)}
+
+  /* ---------- Achievements ---------- */
+  .badges{display:flex;flex-wrap:wrap;gap:6px}
+  .badge{background:#fff7ea;border:2px solid #efd6b6;padding:6px 8px;border-radius:6px;font-size:11px}
+
+  /* ---------- Inventory ---------- */
+  .inv{display:flex;gap:8px;flex-wrap:wrap}
+  .inv .slot{background:#fff;padding:6px;border-radius:6px;border:1px solid #eee;width:88px;height:88px;display:flex;align-items:center;justify-content:center;flex-direction:column;font-size:11px}
+
+  /* ---------- Pixel font fallback import (only used if available) ---------- */
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+  .lang-toggle{font-size:12px;padding:6px 8px;border-radius:6px;background:#fff;border:1px solid #dcd0bf}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Poultry Quest — SkillTrack360 Demo</h1>
+    <div class="top-right">
+      <div class="score" id="scoreDisplay">Score: 0</div>
+      <select id="lang" class="lang-toggle" title="Language">
+        <option value="en">English</option>
+        <option value="ph">Tagalog</option>
+      </select>
+      <button id="restart" class="ghost">Restart</button>
+    </div>
+  </header>
+
+  <div class="grid">
+    <!-- LEFT: Stage -->
+    <section class="panel">
+      <div class="stage" id="stageArea" aria-live="polite">
+        <div class="barn">BARN</div>
+        <div class="sun"></div>
+        <div class="sprite-wrap">
+          <!-- pixel images will be data URIs swapped by JS -->
+          <img id="sprite" class="pixel-img bounce" src="" alt="sprite">
+        </div>
+        <div class="ground"></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+        <div style="flex:1" class="info" id="taskText">Task: —</div>
+        <div class="badges" id="badges"></div>
+      </div>
+    </section>
+
+    <!-- RIGHT: Controls & Info -->
+    <aside class="panel controls">
+      <div>
+        <strong id="titleText">Welcome</strong>
+        <div class="info" id="descText">Start your poultry journey. Follow proper care steps. (Humane, non-graphic.)</div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button id="actionA" class="btn-ghost">Action A</button>
+        <button id="actionB" class="btn-ghost">Action B</button>
+      </div>
+
+      <div style="margin-top:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><strong>Inventory</strong></div>
+          <div class="info" id="ageText">Age: 0 days</div>
+        </div>
+        <div class="inv" id="inventory">
+          <!-- slots -->
+        </div>
+      </div>
+
+      <div style="margin-top:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><strong>Quest Log</strong></div>
+          <div class="info" id="stageIndicator">Stage: 0</div>
+        </div>
+        <div class="log" id="gameLog" aria-live="polite"></div>
+      </div>
+
+      <div style="margin-top:8px;display:flex;gap:8px">
+        <button id="nextDay" class="ghost">Next Day</button>
+        <button id="showGuide">Care Guide</button>
+      </div>
+    </aside>
+  </div> <!-- grid -->
+
+  <div class="panel">
+    <strong>Slaughter / Food Prep (educational, non-graphic)</strong>
+    <div class="info" id="slaughterText">Final steps will appear here when the chicken is mature.</div>
+  </div>
+
+  <footer style="text-align:center;color:var(--muted);font-size:12px;margin-top:8px">
+    Prototype for teaching poultry care & humane, traditional Filipino steps. No graphic content.
+  </footer>
+</div>
+
+<script>
+/* =========================
+   Pixel SVG images (data URIs)
+   Simple blocky pixel-art made with SVG rects for demo.
+   ========================= */
+const SVG = {
+  egg: `data:image/svg+xml;utf8,
+  <svg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'>
+    <rect width='100%' height='100%' fill='%23f6efe4'/>
+    <g transform='translate(20,10)'>
+      <ellipse cx='50' cy='60' rx='36' ry='46' fill='%23fff' stroke='%23eddab4' stroke-width='4'/>
+      <rect x='10' y='40' width='20' height='6' fill='%23fbe9cb'/>
+      <rect x='70' y='80' width='10' height='6' fill='%23f0d9b0'/>
+    </g>
+  </svg>`.replace(/\n|\r/g,''),
+
+  incubator: `data:image/svg+xml;utf8,
+  <svg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'>
+    <rect width='100%' height='100%' fill='%23f6efe4'/>
+    <g>
+      <rect x='20' y='18' width='100' height='90' rx='8' fill='%23dceef0' stroke='%238aa9ac' stroke-width='4'/>
+      <rect x='32' y='30' width='76' height='54' fill='%23fff' />
+      <rect x='44' y='86' width='52' height='8' fill='%238aa9ac'/>
+      <text x='40' y='58' fill='%238aa9ac' font-size='10'>Incubator</text>
+    </g>
+  </svg>`.replace(/\n|\r/g,''),
+
+  chick: `data:image/svg+xml;utf8,
+  <svg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'>
+    <rect width='100%' height='100%' fill='%23fff7ea'/>
+    <g transform='translate(10,18)'>
+      <rect x='30' y='22' width='36' height='36' rx='8' fill='%23ffd54a' stroke='%23e6b62e'/>
+      <circle cx='42' cy='34' r='4' fill='%23000'/>
+      <circle cx='60' cy='34' r='4' fill='%23000'/>
+      <rect x='44' y='46' width='12' height='6' fill='%23ff9800' rx='2'/>
+      <rect x='36' y='56' width='28' height='10' fill='%23ffd54a' rx='4'/>
+    </g>
+  </svg>`.replace(/\n|\r/g,''),
+
+  grower: `data:image/svg+xml;utf8,
+  <svg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'>
+    <rect width='100%' height='100%' fill='%23fff7ea'/>
+    <g transform='translate(10,12)'>
+      <rect x='24' y='28' width='52' height='48' rx='6' fill='%23ffcc66' stroke='%23d9a54a'/>
+      <circle cx='46' cy='42' r='5' fill='%23000'/>
+      <circle cx='64' cy='42' r='5' fill='%23000'/>
+      <rect x='36' y='70' width='20' height='10' fill='%23c58d2a'/>
+    </g>
+  </svg>`.replace(/\n|\r/g,''),
+
+  adult: `data:image/svg+xml;utf8,
+  <svg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'>
+    <rect width='100%' height='100%' fill='%23fff7ea'/>
+    <g transform='translate(6,6)'>
+      <rect x='20' y='36' width='70' height='54' rx='12' fill='%23f7b267' stroke='%23c37a2f'/>
+      <circle cx='44' cy='52' r='6' fill='%23000'/>
+      <circle cx='66' cy='52' r='6' fill='%23000'/>
+      <rect x='36' y='86' width='8' height='12' fill='%23b35f1c'/>
+      <rect x='58' y='86' width='8' height='12' fill='%23b35f1c'/>
+    </g>
+  </svg>`.replace(/\n|\r/g,''),
+
+  finish: `data:image/svg+xml;utf8,
+  <svg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'>
+    <rect width='100%' height='100%' fill='%23fff7ea'/>
+    <g transform='translate(10,10)'>
+      <rect x='12' y='20' width='96' height='90' rx='10' fill='%23e6f7e9' stroke='%2386c29e'/>
+      <text x='20' y='70' fill='%233b8f70' font-size='14'>Finished</text>
+    </g>
+  </svg>`.replace(/\n|\r/g,'')
+};
+
+/* =========================
+   Game State
+   ========================= */
+const LANG = { en: { start:"Start your journey", task:"Task", nextDay:"Next Day", actionA:"Do Action A", actionB:"Do Action B", guide:"Care Guide", restart:"Restart", score:"Score", age:"Age", stage:"Stage" },
+               ph: { start:"Simulan ang pag-aalaga", task:"Gawain", nextDay:"Susunod na Araw", actionA:"Gawin A", actionB:"Gawin B", guide:"Gabay sa Alaga", restart:"Magsimula Muli", score:"Iskor", age:"Edad", stage:"Etapa"} };
+
+let state = {
+  lang: 'en',
+  stage: 0,        // 0 egg, 1 incubating, 2 hatched chick, 3 grower, 4 adult, 5 finished
+  ageDays: 0,
+  score: 0,
+  inventory: [],
+  badges: new Set(),
+  log: []
+};
+
+/* =========================
+   Elements
+   ========================= */
+const sprite = document.getElementById('sprite');
+const taskText = document.getElementById('taskText');
+const titleText = document.getElementById('titleText');
+const descText = document.getElementById('descText');
+const actionA = document.getElementById('actionA');
+const actionB = document.getElementById('actionB');
+const inventoryDiv = document.getElementById('inventory');
+const gameLog = document.getElementById('gameLog');
+const scoreDisplay = document.getElementById('scoreDisplay');
+const badgesDiv = document.getElementById('badges');
+const ageText = document.getElementById('ageText');
+const stageIndicator = document.getElementById('stageIndicator');
+const langSelect = document.getElementById('lang');
+const nextDay = document.getElementById('nextDay');
+const showGuide = document.getElementById('showGuide');
+const restartBtn = document.getElementById('restart');
+const slaughterText = document.getElementById('slaughterText');
+
+/* =========================
+   Utility functions
+   ========================= */
+function t(k){ return LANG[state.lang][k] || k; }
+function pushLog(msg){ state.log.unshift(`${(new Date()).toLocaleTimeString()} — ${msg}`); renderLog(); }
+function addScore(points, reason){ state.score += points; pushLog((state.lang==='ph' ? '+' : '+') + points + ' pts — ' + reason); renderScore(); }
+function renderScore(){ scoreDisplay.textContent = `${t('score')}: ${state.score}`; }
+function setSprite(key){ sprite.src = SVG[key]; sprite.classList.add('bounce'); setTimeout(()=>sprite.classList.remove('bounce'),700); }
+function updateInventory(){ inventoryDiv.innerHTML=''; for(let i=0;i<4;i++){ const slot = document.createElement('div'); slot.className='slot'; if(state.inventory[i]){ slot.innerHTML = `<div style="font-weight:700">${state.inventory[i].name}</div><div class="info">${state.inventory[i].desc}</div>` } else slot.innerHTML='<div class="info">Empty</div>'; inventoryDiv.appendChild(slot);} }
+function renderBadges(){ badgesDiv.innerHTML=''; state.badges.forEach(b=>{ const el=document.createElement('div'); el.className='badge'; el.textContent=b; badgesDiv.appendChild(el); }) }
+function renderLog(){ gameLog.innerHTML = state.log.slice(0,10).map(l=>`<div>${l}</div>`).join(''); }
+function renderUI(){
+  ageText.textContent = `${t('age')}: ${state.ageDays} ${state.lang==='ph' ? 'araw' : 'days'}`;
+  stageIndicator.textContent = `${t('stage')}: ${state.stage}`;
+  renderBadges();
+  updateInventory();
+  renderLog();
+  renderScore();
+  // update slaughter text
+  if(state.stage >=4){
+    slaughterText.textContent = state.lang==='ph' ? 
+      "Pagtatapos: Sundin ang maingat at magalang na paraan ng pagproseso: patigilin ang paggalaw, mabilis at malinis na pagdugo, pag-scald para sa pagbabalat, at maingat na paglinis." :
+      "Final: Follow careful and respectful processing: calm restraint, swift & sanitary bleeding, scalding to remove feathers, and careful cleaning.";
+  } else {
+    slaughterText.textContent = state.lang==='ph' ? "Ang manok ay hindi pa handa para sa pagproseso." : "Chicken is not ready for processing yet.";
+  }
+}
+
+/* =========================
+   Game logic per stage
+   ========================= */
+function enterStage(s){
+  state.stage = s;
+  switch(s){
+    case 0: // egg
+      setSprite('egg');
+      titleText.textContent = state.lang==='ph' ? "Itlog" : "Egg";
+      descText.textContent = state.lang==='ph' ? "Simulan sa itlog — siguraduhin ang tamang incubation." : "Start with an egg — ensure proper incubation.";
+      taskText.textContent = `${t('task')}: ` + (state.lang==='ph' ? "I-incubate nang tama (init at pag-ikot)." : "Incubate properly (warmth & turning).");
+      actionA.textContent = state.lang==='ph' ? "Gamitin ang incubator (tama)" : "Use incubator (correct)";
+      actionB.textContent = state.lang==='ph' ? "Ilagay sa malamig (mali)" : "Leave on cold ground (wrong)";
+      break;
+    case 1: // incubating
+      setSprite('incubator');
+      titleText.textContent = state.lang==='ph' ? "Pag-iincubate" : "Incubating";
+      descText.textContent = state.lang==='ph' ? "Panatilihing mainit (~37.5°C) at i-turn tuwing araw." : "Keep warm (~37.5°C) and turn daily.";
+      taskText.textContent = `${t('task')}: ` + (state.lang==='ph' ? "Hintayin ang paglabas ng sisiw." : "Wait for hatch.");
+      actionA.textContent = state.lang==='ph' ? "Maghintay nang maayos" : "Wait properly";
+      actionB.textContent = state.lang==='ph' ? "Hastang i-unplug (mali)" : "Unplug incubator (wrong)";
+      break;
+    case 2: // chick
+      setSprite('chick');
+      titleText.textContent = state.lang==='ph' ? "Sisiw" : "Chick";
+      descText.textContent = state.lang==='ph' ? "Bigyan ng brooder, init, starter feed at malinis na tubig." : "Provide brooder, warmth, starter feed and clean water.";
+      taskText.textContent = `${t('task')}: ` + (state.lang==='ph' ? "Ibigay ang unang pangangalaga (pagkain & init)." : "Provide initial care (feed & warmth).");
+      actionA.textContent = state.lang==='ph' ? "Maglagay ng brooder lamp (tama)" : "Set brooder lamp (correct)";
+      actionB.textContent = state.lang==='ph' ? "Bigyan ng adult feed (mali)" : "Give adult feed (wrong)";
+      break;
+    case 3: // grower
+      setSprite('grower');
+      titleText.textContent = state.lang==='ph' ? "Lumalaking Manok" : "Grower";
+      descText.textContent = state.lang==='ph' ? "Panatilihin ang kalinisan, bakuna, at sapat na pagkain." : "Maintain cleanliness, vaccination, and proper feeding.";
+      taskText.textContent = `${t('task')}: ` + (state.lang==='ph' ? "Linisin ang kulungan at i-monitor ang sakit." : "Clean coop and monitor for disease.");
+      actionA.textContent = state.lang==='ph' ? "Linisin ang coop (tama)" : "Clean coop (correct)";
+      actionB.textContent = state.lang==='ph' ? "Huwag linisin (mali)" : "Never clean (wrong)";
+      break;
+    case 4: // adult
+      setSprite('adult');
+      titleText.textContent = state.lang==='ph' ? "Adultong Manok" : "Adult Chicken";
+      descText.textContent = state.lang==='ph' ? "Manok ay handa na para sa processing kung malusog at tamang edad/masa." : "Chicken may be ready for processing if healthy and proper weight/age.";
+      taskText.textContent = `${t('task')}: ` + (state.lang==='ph' ? "Ihanda para sa tamang pagproseso (edukasyonal, di-graphic)." : "Prepare for proper processing (educational, non-graphic).");
+      actionA.textContent = state.lang==='ph' ? "Ipakita ang hakbang ng pagproseso" : "Show processing steps";
+      actionB.textContent = state.lang==='ph' ? "Magpatuloy sa pagpapalaki (opsyonal)" : "Continue raising (optional)";
+      break;
+    case 5: // finished
+      setSprite('finish');
+      titleText.textContent = state.lang==='ph' ? "Tapos" : "Finished";
+      descText.textContent = state.lang==='ph' ? "Natutunan mo ang lifecycle at tamang pangangalaga ng poultry." : "You learned lifecycle and proper poultry care.";
+      taskText.textContent = `${t('task')}: ` + (state.lang==='ph' ? "Tapos na ang laro" : "Game completed");
+      actionA.textContent = state.lang==='ph' ? "I-restart" : "Restart";
+      actionB.textContent = state.lang==='ph' ? "I-download ulat" : "Download report";
+      break;
+    default:
+      break;
+  }
+  renderUI();
+}
+
+/* =========================
+   Stage Actions
+   ========================= */
+actionA.addEventListener('click', ()=>{
+  if(state.stage===0){ // incubate correctly
+    addScore(20, state.lang==='ph' ? 'Tamang incubation' : 'Proper incubation');
+    pushLog(state.lang==='ph' ? 'Itlog inilipat sa incubator' : 'Egg placed in incubator');
+    enterStage(1);
+  } else if(state.stage===1){
+    // wait -> hatch
+    addScore(10, state.lang==='ph' ? 'Pag-aalaga habang nag-iincubate' : 'Care during incubation');
+    pushLog(state.lang==='ph' ? 'Nagpapatuloy ang incubation, nag-hatch!' : 'Incubation continued — hatch!');
+    enterStage(2);
+  } else if(state.stage===2){
+    // brooding correct
+    state.inventory[0] = { name: state.lang==='ph' ? 'Brooder Lamp' : 'Brooder Lamp', desc: state.lang==='ph' ? 'Init para sa sisiw' : 'Warmth for chick' };
+    addScore(15, state.lang==='ph' ? 'Brooding' : 'Brooding');
+    state.badges.add(state.lang==='ph' ? 'Brooder Pro' : 'Brooder Pro');
+    pushLog(state.lang==='ph' ? 'Naglagay ng brooder at starter feed' : 'Set brooder and gave starter feed');
+    enterStage(3);
+  } else if(state.stage===3){
+    // clean coop -> advance to adult
+    addScore(18, state.lang==='ph' ? 'Malinis na coop' : 'Clean coop');
+    state.badges.add(state.lang==='ph' ? 'Sanitation Star' : 'Sanitation Star');
+    pushLog(state.lang==='ph' ? 'Coop nilinis, manok lumakas' : 'Coop cleaned, bird thrived');
+    enterStage(4);
+  } else if(state.stage===4){
+    // show processing steps
+    showProcessingSteps();
+  } else if(state.stage===5){
+    restartGame();
+  }
+  renderUI();
+});
+
+actionB.addEventListener('click', ()=>{
+  if(state.stage===0){
+    // wrong
+    addScore(-8, state.lang==='ph' ? 'Maling incubation' : 'Wrong incubation');
+    pushLog(state.lang==='ph' ? 'Itlog iniwan sa malamig — hindi inirerekomenda' : 'Egg left cold — not recommended');
+  } else if(state.stage===1){
+    addScore(-10, state.lang==='ph' ? 'Pinatay ang incubator' : 'Unplugged incubator');
+    pushLog(state.lang==='ph' ? 'Incubator in-unplug — incubation nabigo' : 'Unplugged incubator — incubation failed');
+    // regress maybe
+    enterStage(0);
+  } else if(state.stage===2){
+    addScore(-10, state.lang==='ph' ? 'Maling feed' : 'Wrong feed');
+    pushLog(state.lang==='ph' ? 'Binigyan ng adult feed — hindi angkop' : 'Gave adult feed — not suitable');
+  } else if(state.stage===3){
+    addScore(-12, state.lang==='ph' ? 'Hindi nilinis' : 'Not cleaned');
+    pushLog(state.lang==='ph' ? 'Coop hindi nilinis — risk ng sakit' : 'Coop not cleaned — disease risk');
+  } else if(state.stage===4){
+    // choose to continue raising
+    addScore(5, state.lang==='ph' ? 'Nagpatuloy sa pagpapalaki' : 'Continued raising');
+    pushLog(state.lang==='ph' ? 'Pinili ipagpatuloy ang pagpapalaki' : 'Chose to keep raising');
+    // small benefit but game stays at adult
+  }
+  renderUI();
+});
+
+/* =========================
+   Next Day progression (aging)
+   ========================= */
+nextDay.addEventListener('click', ()=>{
+  state.ageDays++;
+  pushLog((state.lang==='ph' ? 'Lumipas ang isang araw: ' : 'One day passed: ') + `${state.ageDays} ${state.lang==='ph'?'araw':'days'}`);
+  // small passive score for consistent care
+  addScore(2, state.lang==='ph' ? 'Araw-araw na pag-aalaga' : 'Daily care');
+  // auto-stage transitions based on age
+  if(state.stage===1 && state.ageDays >= 3){ // incubating days -> hatch
+    enterStage(2);
+    addScore(12, state.lang==='ph' ? 'Pumutok ang itlog' : 'Egg hatched');
+  }
+  if(state.stage===2 && state.ageDays >= 10){
+    enterStage(3);
+    addScore(12, state.lang==='ph' ? 'Sisiw naging grower' : 'Chick matured to grower');
+  }
+  if(state.stage===3 && state.ageDays >= 28){
+    enterStage(4);
+    addScore(20, state.lang==='ph' ? 'Grower naging adult' : 'Grower matured to adult');
+  }
+  // achievements
+  if(state.score >= 50) state.badges.add(state.lang==='ph' ? 'Farm Achiever' : 'Farm Achiever');
+  renderUI();
+});
+
+/* =========================
+   Guide / Slaughter Steps (educational, non-graphic)
+   ========================= */
+showGuide.addEventListener('click', ()=>{
+  const guide = state.lang==='ph' ? localGuidePH() : localGuideEN();
+  alert(guide);
+});
+
+function showProcessingSteps(){
+  const steps = state.lang==='ph' ? processingPH() : processingEN();
+  // show as modal-like alert for demo (non-graphic)
+  alert(steps);
+  addScore(10, state.lang==='ph' ? 'Nakita ang tamang pagproseso' : 'Viewed proper processing');
+  pushLog(state.lang==='ph' ? 'Pinag-aralan ang mga hakbang ng pagproseso' : 'Reviewed processing steps');
+}
+
+/* =========================
+   Language & Restart
+   ========================= */
+langSelect.addEventListener('change', (e)=>{ state.lang = e.target.value; renderUI(); enterStage(state.stage); });
+restartBtn.addEventListener('click', ()=>{ if(confirm(state.lang==='ph' ? 'Sigurado ka bang ire-restart?' : 'Restart game?')) restartGame(); });
+
+function restartGame(){
+  state = { lang: state.lang, stage:0, ageDays:0, score:0, inventory:[], badges:new Set(), log:[] };
+  pushLog(state.lang==='ph' ? 'Nagsimula muli ang laro' : 'Game restarted');
+  enterStage(0);
+}
+
+/* =========================
+   Helpful Localized Texts
+   ========================= */
+function processingEN(){
+  return "Educational steps for humane, sanitary processing (non-graphic):\n\n" +
+    "1) Select a calm, healthy bird. Minimize stress before handling.\n" +
+    "2) Restrain humanely — keep bird calm and secure.\n" +
+    "3) Perform a quick, sanitary bleeding method (done by trained personnel), ensuring health regulations.\n" +
+    "4) Scald briefly in warm water to ease feather removal.\n" +
+    "5) Remove feathers carefully and eviscerate in a clean area following food-safety guidelines.\n" +
+    "6) Rinse, chill promptly, and store under proper refrigeration.\n\n" +
+    "Note: This is an educational summary only. Practical training should be supervised by an instructor; avoid graphic content in presentations.";
+}
+function processingPH(){
+  return "Edukasyonal na hakbang para sa maayos at magalang na pagproseso (hindi graphic):\n\n" +
+    "1) Pumili ng kalmado at malusog na manok. I-minimize ang stress bago hawakan.\n" +
+    "2) Ikulong ng maayos at magalang upang manatiling kalmado ang manok.\n" +
+    "3) Mabilis at malinis na pagdurugo (isinasagawa ng sanay na tao), sundin ang patakaran sa kalusugan.\n" +
+    "4) Scald sa maligamgam na tubig para madaling maalis ang mga balahibo.\n" +
+    "5) Alisin ang balahibo at hatiin ang loob (evisceration) sa malinis na lugar ayon sa food-safety standards.\n" +
+    "6) Banlawan, palamigin, at itago ng tama sa refrigerator.\n\n" +
+    "Tandaan: Para lamang sa edukasyon. Kailangan ng praktikal na pagsasanay sa ilalim ng instruktor; iwasan ang mga graphic na presentasyon.";
+}
+
+function localGuideEN(){
+  return "Care Guide (short):\n\n" +
+    "- Incubation: 37-38°C, humidity control, turn eggs multiple times per day.\n" +
+    "- Brooding: 32-35°C for first week, gradually reduce heat.\n" +
+    "- Feed: Starter crumble for chicks, balanced grower feed later.\n" +
+    "- Cleanliness: Regular coop cleaning and dry bedding.\n" +
+    "- Health: Watch for lethargy, diarrhea; consult instructor for meds/vaccines.";
+}
+function localGuidePH(){
+  return "Gabay sa Alaga (maikli):\n\n" +
+    "- Incubation: 37-38°C, kontrolin ang humidity, iikot ang itlog araw-araw.\n" +
+    "- Brooding: 32-35°C sa unang linggo, paunti-unting bawasan ang init.\n" +
+    "- Pagkain: Starter crumble para sa sisiw, balanced grower feed kapag lumalaki.\n" +
+    "- Kalinisan: Regular na paglilinis ng kulungan at tuyo na pinaglalagyan.\n" +
+    "- Kalusugan: Bantayan ang pagkapahina o pagtatae; kumunsulta sa instruktor para sa bakuna/medikasyon.";
+}
+
+/* =========================
+   Initialize Game
+   ========================= */
+(function init(){
+  // prepare inventory slots (4)
+  for(let i=0;i<4;i++) state.inventory.push(null);
+  pushLog(state.lang==='ph' ? 'Nagsimula ang Poultry Quest' : 'Poultry Quest started');
+  enterStage(0);
+})();
+</script>
+</body>
+</html>

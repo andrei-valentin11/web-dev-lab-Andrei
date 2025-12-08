@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gamified Carpentry Learning Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="login-screen">
+    <h2>Teacher / Student Login</h2>
+    <input type="text" id="username" placeholder="Enter your name">
+    <select id="role">
+      <option value="student">Student</option>
+      <option value="teacher">Teacher</option>
+    </select>
+    <button id="loginBtn">Login</button>
+  </div>
+
+  <div id="game-screen" class="hidden">
+    <h1>Carpentry Assembly Challenge</h1>
+    <div id="info-bar">
+      <p>Player: <span id="player-name"></span></p>
+      <p>Score: <span id="score">0</span></p>
+      <p>Time Left: <span id="timer">60</span>s</p>
+    </div>
+
+    <div id="game-area">
+      <div id="furniture-area"></div>
+      <div id="parts-area"></div>
+    </div>
+
+    <div id="badge-area"></div>
+    <button id="next-level" class="hidden">Next Project</button>
+  </div>
+
+  <div id="teacher-screen" class="hidden">
+    <h2>Teacher Dashboard</h2>
+    <p>Student Progress:</p>
+    <ul id="student-progress"></ul>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
