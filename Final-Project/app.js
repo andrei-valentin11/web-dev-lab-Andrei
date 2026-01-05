@@ -92,6 +92,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
     renderRoster();
     updateUserUI();
     bindGlobalButtons();
+    wireLessons();
     // Default to species section
     showSection('species-section');
 });
@@ -122,6 +123,7 @@ function bindGlobalButtons(){
     $('#reset-data').addEventListener('click', resetAllData);
     $('#teacher-btn').addEventListener('click', ()=>showSection('teacher-section'));
     $('#user-badge').addEventListener('click', ()=> showLoginModal());
+    $('#theme-toggle').addEventListener('click', toggleTheme);
 }
 function updateUserUI(){
     const u = state.user;
@@ -484,4 +486,182 @@ function resetAllData(){
         LS.clear();
         window.location.reload();
     }
+}
+
+// ---------- LESSONS ----------
+function wireLessons(){
+    $$('.lesson-btn').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+            const lesson = btn.dataset.lesson;
+            showLesson(lesson);
+        });
+    });
+}
+
+function showLesson(lessonType){
+    let title = '';
+    let content = '';
+
+    switch(lessonType){
+        case 'intro':
+            title = 'Introduction to Aquaculture';
+            content = `
+                <div class="lesson-content">
+                    <h3>What is Aquaculture?</h3>
+                    <p>Aquaculture is the farming of aquatic organisms such as fish, crustaceans, mollusks, and aquatic plants. It involves cultivating freshwater and saltwater populations under controlled conditions.</p>
+
+                    <h4>Why Aquaculture Matters</h4>
+                    <ul>
+                        <li>Provides sustainable food source for growing population</li>
+                        <li>Reduces pressure on wild fish stocks</li>
+                        <li>Creates economic opportunities in coastal communities</li>
+                        <li>Can be more environmentally controlled than traditional fishing</li>
+                    </ul>
+
+                    <h4>Types of Aquaculture</h4>
+                    <ul>
+                        <li><strong>Marine aquaculture:</strong> Farming in seawater</li>
+                        <li><strong>Freshwater aquaculture:</strong> Farming in freshwater ponds, tanks, or cages</li>
+                        <li><strong>Brackish water aquaculture:</strong> Farming in estuaries or coastal areas</li>
+                    </ul>
+                </div>
+
+                <div class="lesson-quiz">
+                    <h4>Quick Quiz</h4>
+                    <p>What is the main purpose of aquaculture?</p>
+                    <button class="btn primary" onclick="alert('Correct! Aquaculture provides sustainable food production.')">To provide sustainable food</button>
+                    <button class="btn btn-secondary" onclick="alert('Not quite - while it can be profitable, the main purpose is sustainable food production.')">To make money</button>
+                </div>
+            `;
+            break;
+
+        case 'water':
+            title = 'Water Quality Management';
+            content = `
+                <div class="lesson-content">
+                    <h3>Critical Water Parameters</h3>
+                    <p>Maintaining optimal water quality is essential for successful aquaculture operations.</p>
+
+                    <h4>Key Parameters to Monitor</h4>
+                    <ul>
+                        <li><strong>pH:</strong> Measures acidity/alkalinity (ideal range: 6.5-8.5)</li>
+                        <li><strong>Temperature:</strong> Affects metabolism and oxygen solubility</li>
+                        <li><strong>Dissolved Oxygen:</strong> Essential for fish respiration (minimum 5 mg/L)</li>
+                        <li><strong>Ammonia:</strong> Toxic waste product (should be <0.1 mg/L)</li>
+                        <li><strong>Nitrite:</strong> Intermediate in nitrogen cycle (should be <0.1 mg/L)</li>
+                        <li><strong>Nitrate:</strong> Less toxic but can cause stress at high levels</li>
+                    </ul>
+
+                    <h4>Water Quality Management Strategies</h4>
+                    <ul>
+                        <li>Regular monitoring and testing</li>
+                        <li>Proper aeration and oxygenation</li>
+                        <li>Water exchange and filtration systems</li>
+                        <li>Feeding management to reduce waste</li>
+                        <li>Biological filtration using beneficial bacteria</li>
+                    </ul>
+                </div>
+
+                <div class="lesson-interactive">
+                    <h4>Interactive Exercise</h4>
+                    <p>Try adjusting the simulator controls to maintain optimal water conditions for tilapia!</p>
+                    <button class="btn primary" onclick="showSection('sim-section')">Go to Simulator</button>
+                </div>
+            `;
+            break;
+
+        case 'species':
+            title = 'Species Selection';
+            content = `
+                <div class="lesson-content">
+                    <h3>Choosing the Right Species</h3>
+                    <p>Selecting appropriate aquaculture species depends on climate, market demand, available resources, and farming experience.</p>
+
+                    <h4>Factors to Consider</h4>
+                    <ul>
+                        <li><strong>Local climate and water conditions</strong></li>
+                        <li><strong>Market demand and price</strong></li>
+                        <li><strong>Growth rate and feed conversion efficiency</strong></li>
+                        <li><strong>Disease resistance</strong></li>
+                        <li><strong>Available technology and expertise</strong></li>
+                    </ul>
+
+                    <div class="species-highlights">
+                        <div class="highlight-card">
+                            <h5>Tilapia</h5>
+                            <p>Hardy, fast-growing, tolerant of poor water quality. Ideal for beginners.</p>
+                        </div>
+                        <div class="highlight-card">
+                            <h5>Catfish</h5>
+                            <p>High market value, good for intensive culture, disease resistant.</p>
+                        </div>
+                        <div class="highlight-card">
+                            <h5>Shrimp</h5>
+                            <p>High value but requires strict water quality control and expertise.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lesson-quiz">
+                    <h4>Species Selection Quiz</h4>
+                    <p>Which species is generally recommended for aquaculture beginners?</p>
+                    <button class="btn primary" onclick="alert('Correct! Tilapia are hardy and forgiving of water quality issues.')">Tilapia</button>
+                    <button class="btn btn-secondary" onclick="alert('Shrimp require more expertise and strict conditions.')">Shrimp</button>
+                </div>
+            `;
+            break;
+
+        case 'sustainable':
+            title = 'Sustainable Practices';
+            content = `
+                <div class="lesson-content">
+                    <h3>Sustainable Aquaculture</h3>
+                    <p>Sustainable aquaculture balances economic viability with environmental responsibility and social equity.</p>
+
+                    <h4>Key Principles</h4>
+                    <ul>
+                        <li><strong>Environmental sustainability:</strong> Minimize pollution and habitat impact</li>
+                        <li><strong>Economic viability:</strong> Profitable operations that support communities</li>
+                        <li><strong>Social responsibility:</strong> Fair labor practices and community benefits</li>
+                    </ul>
+
+                    <h4>Sustainable Practices</h4>
+                    <ul>
+                        <li>Use of recirculating aquaculture systems (RAS)</li>
+                        <li>Integrated multi-trophic aquaculture (IMTA)</li>
+                        <li>Responsible feed sourcing and feeding practices</li>
+                        <li>Proper waste management and effluent treatment</li>
+                        <li>Stocking density optimization</li>
+                        <li>Selective breeding for improved traits</li>
+                    </ul>
+
+                    <h4>Certification Programs</h4>
+                    <p>Many countries have certification programs like ASC (Aquaculture Stewardship Council) or BAP (Best Aquaculture Practices) to ensure sustainable production.</p>
+                </div>
+
+                <div class="lesson-interactive">
+                    <h4>Think About It</h4>
+                    <p>How can aquaculture practices be made more sustainable in your local area?</p>
+                    <button class="btn primary" onclick="alert('Great question! Consider local water resources, waste management, and community needs.')">Reflect</button>
+                </div>
+            `;
+            break;
+    }
+
+    const modalHTML = `
+        <div class="modal lesson-modal" role="dialog" aria-modal="true" aria-labelledby="lesson-title">
+            <div class="modal-card">
+                <button class="btn-close" id="close-lesson" aria-label="Close lesson">&times;</button>
+                <h2 id="lesson-title">${title}</h2>
+                ${content}
+                <div class="lesson-actions">
+                    <button class="btn btn-secondary" onclick="showSection('lessons-section')">Back to Lessons</button>
+                    <button class="btn primary" onclick="$('#close-lesson').click()">Close</button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    $('#modal-root').innerHTML = modalHTML;
+    $('#close-lesson').addEventListener('click', ()=> $('#modal-root').innerHTML='');
 }

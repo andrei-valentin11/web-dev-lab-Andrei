@@ -19,6 +19,9 @@
       </div>
 
       <div class="top-actions">
+        <button id="theme-toggle" class="btn btn-secondary" aria-label="Toggle dark mode">
+          <i class="fas fa-moon"></i>
+        </button>
         <div id="user-badge" class="user-badge" role="status">Guest</div>
         <button id="btn-login" class="btn btn-primary-outline" aria-label="Sign In or Change User">
           <i class="fas fa-user-circle"></i> Sign In
@@ -59,8 +62,48 @@
           </div>
         </div>
         <div id="species-list" class="species-grid" role="list"></div>
+      </section>
 
-        </section>
+      <section id="lessons-section" class="panel hidden" role="region" aria-labelledby="lessons-heading">
+        <div class="panel-head">
+          <h2 id="lessons-heading">Interactive Lessons</h2>
+          <p class="muted">Learn about aquaculture through engaging multimedia content</p>
+        </div>
+        <div id="lessons-list" class="lessons-grid" role="list">
+          <div class="lesson-card">
+            <div class="lesson-icon">
+              <i class="fas fa-fish"></i>
+            </div>
+            <h3>Introduction to Aquaculture</h3>
+            <p>Learn the basics of aquaculture and its importance in food production.</p>
+            <button class="btn primary lesson-btn" data-lesson="intro">Start Lesson</button>
+          </div>
+          <div class="lesson-card">
+            <div class="lesson-icon">
+              <i class="fas fa-water"></i>
+            </div>
+            <h3>Water Quality Management</h3>
+            <p>Understand the critical parameters for maintaining healthy aquatic environments.</p>
+            <button class="btn primary lesson-btn" data-lesson="water">Start Lesson</button>
+          </div>
+          <div class="lesson-card">
+            <div class="lesson-icon">
+              <i class="fas fa-seedling"></i>
+            </div>
+            <h3>Species Selection</h3>
+            <p>Discover different aquaculture species and their optimal growing conditions.</p>
+            <button class="btn primary lesson-btn" data-lesson="species">Start Lesson</button>
+          </div>
+          <div class="lesson-card">
+            <div class="lesson-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <h3>Sustainable Practices</h3>
+            <p>Explore eco-friendly aquaculture methods and their benefits.</p>
+            <button class="btn primary lesson-btn" data-lesson="sustainable">Start Lesson</button>
+          </div>
+        </div>
+      </section>
 
       <section id="sim-section" class="panel hidden" role="region" aria-labelledby="sim-heading">
         <div class="panel-head">
@@ -203,6 +246,7 @@
   </div>
 
   <div id="modal-root"></div>
+
 
   <script src="app.js"></script>
 </body>
